@@ -1,0 +1,72 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#top-bar {
+    background-color: red;
+    height: 10vh;
+    width: 100%;
+}
+
+main {
+    display: flex;
+    height: 90vh;
+    background-color: blue;
+
+    div:first-of-type {
+        height: 80vh;
+        width: 80vw;
+    }
+
+    #chat {
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+        width: 20vw;
+        background-color: gray;
+
+        overflow-x: hidden;
+        word-wrap: break-word;
+
+        & > * {
+            width: 20vw;
+        }
+
+        #tchat-history {
+            overflow-y: scroll;
+        }
+
+        #send-bar {
+            height: 10vh;
+
+            padding: 0.5rem;
+
+            background-color: red;
+            resize: none;
+            border: none;
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}
+
+.time:after {
+    content: " ";
+}
+
+.username:after {
+    content: ": ";
+}
+
+footer {
+    background-color: black;
+    height: 10vh;
+    width: 100vw;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
