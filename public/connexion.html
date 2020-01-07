@@ -11,9 +11,10 @@
 </head>
 
 <body>
-    <h1 class="mainTitle text-center">Connectez-vous ou inscrivez-vous pour accéder au chat!</h1>
+    <h1 class="mainTitle text-center text-white">Sign in or sign up to get to the chat!</h1>
     <!-- Formulaire de connexion -->
-    <h3 class="text-center">Sign in</h3>
+    <div id="signInForm">
+      <h3 class="text-center">Sign in</h3>
             <div class="row d-flex justify-content-center">
               <form class="border shadow-lg p-3 mb-3 mt-3 bg-info">
                   <div class="form-row">
@@ -29,7 +30,8 @@
                   <button type="submit" class="btn btn-light">Sign in</button>
                   <p> No account yet? <a id="signUpLink" href="#">Sign up !</a></p>
                 </form>
-            </div>
+              </div>
+      </div>
 
             <!-- Formulaire d'inscription -->
           <div id="signUpForm">
@@ -56,6 +58,7 @@
         </div>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="assets/js/form.js"></script>
 </body>
 
 </html>

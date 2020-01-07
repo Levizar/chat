@@ -1,34 +1,13 @@
 body {
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(136deg, #3b7d28, #000000, #ffffff) no-repeat;
-  background-size: 800% 800%;
-  -webkit-animation: AnimationName 8s ease infinite;
-          animation: AnimationName 8s ease infinite;
+  background: repeating-linear-gradient(45deg, rgba(112, 112, 112, 0.12) 0px, rgba(112, 112, 112, 0.12) 42px, rgba(105, 105, 105, 0.12) 42px, rgba(105, 105, 105, 0.12) 83px, rgba(206, 206, 206, 0.12) 83px, rgba(206, 206, 206, 0.12) 103px, rgba(130, 130, 130, 0.12) 103px, rgba(130, 130, 130, 0.12) 125px, rgba(51, 51, 51, 0.12) 125px, rgba(51, 51, 51, 0.12) 174px, rgba(220, 220, 220, 0.12) 174px, rgba(220, 220, 220, 0.12) 199px), repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.12) 0px, rgba(192, 192, 192, 0.12) 13px, rgba(119, 119, 119, 0.12) 13px, rgba(119, 119, 119, 0.12) 29px, rgba(157, 157, 157, 0.12) 29px, rgba(157, 157, 157, 0.12) 75px, rgba(223, 223, 223, 0.12) 75px, rgba(223, 223, 223, 0.12) 121px, rgba(80, 80, 80, 0.12) 121px, rgba(80, 80, 80, 0.12) 169px, rgba(208, 208, 208, 0.12) 169px, rgba(208, 208, 208, 0.12) 194px), repeating-linear-gradient(45deg, rgba(44, 44, 44, 0.1) 0px, rgba(44, 44, 44, 0.1) 147px, rgba(38, 38, 38, 0.1) 147px, rgba(38, 38, 38, 0.1) 248px, rgba(1, 1, 1, 0.1) 248px, rgba(1, 1, 1, 0.1) 325px, rgba(34, 34, 34, 0.1) 325px, rgba(34, 34, 34, 0.1) 434px, rgba(98, 98, 98, 0.1) 434px, rgba(98, 98, 98, 0.1) 534px, rgba(79, 79, 79, 0.1) 534px, rgba(79, 79, 79, 0.1) 630px), -webkit-gradient(linear, left top, right top, from(#99ff49), to(#33cc23));
+  background: repeating-linear-gradient(45deg, rgba(112, 112, 112, 0.12) 0px, rgba(112, 112, 112, 0.12) 42px, rgba(105, 105, 105, 0.12) 42px, rgba(105, 105, 105, 0.12) 83px, rgba(206, 206, 206, 0.12) 83px, rgba(206, 206, 206, 0.12) 103px, rgba(130, 130, 130, 0.12) 103px, rgba(130, 130, 130, 0.12) 125px, rgba(51, 51, 51, 0.12) 125px, rgba(51, 51, 51, 0.12) 174px, rgba(220, 220, 220, 0.12) 174px, rgba(220, 220, 220, 0.12) 199px), repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.12) 0px, rgba(192, 192, 192, 0.12) 13px, rgba(119, 119, 119, 0.12) 13px, rgba(119, 119, 119, 0.12) 29px, rgba(157, 157, 157, 0.12) 29px, rgba(157, 157, 157, 0.12) 75px, rgba(223, 223, 223, 0.12) 75px, rgba(223, 223, 223, 0.12) 121px, rgba(80, 80, 80, 0.12) 121px, rgba(80, 80, 80, 0.12) 169px, rgba(208, 208, 208, 0.12) 169px, rgba(208, 208, 208, 0.12) 194px), repeating-linear-gradient(45deg, rgba(44, 44, 44, 0.1) 0px, rgba(44, 44, 44, 0.1) 147px, rgba(38, 38, 38, 0.1) 147px, rgba(38, 38, 38, 0.1) 248px, rgba(1, 1, 1, 0.1) 248px, rgba(1, 1, 1, 0.1) 325px, rgba(34, 34, 34, 0.1) 325px, rgba(34, 34, 34, 0.1) 434px, rgba(98, 98, 98, 0.1) 434px, rgba(98, 98, 98, 0.1) 534px, rgba(79, 79, 79, 0.1) 534px, rgba(79, 79, 79, 0.1) 630px), linear-gradient(90deg, #99ff49, #33cc23);
 }
 
-@-webkit-keyframes AnimationName {
-  0% {
-    background-position: 49% 0%;
-  }
-  50% {
-    background-position: 52% 100%;
-  }
-  100% {
-    background-position: 49% 0%;
-  }
-}
-
-@keyframes AnimationName {
-  0% {
-    background-position: 49% 0%;
-  }
-  50% {
-    background-position: 52% 100%;
-  }
-  100% {
-    background-position: 49% 0%;
-  }
+#jumbotron {
+  background-color: rgba(124, 209, 191, 0.6);
+  border-radius: 5%;
 }
 
 #signUpForm {
