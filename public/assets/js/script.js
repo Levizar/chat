@@ -1,6 +1,6 @@
-const data = new FormData();
-data.append("oldID", "C EST MON OLD ID GROSLOUIS");
-data.append("Shrek", "PTDRLOL");
+const data = {};
+data["oldID"] = "C EST MON OLD ID GROSLOUIS";
+data["Shrek"] = "PTDRLOL";
 const lol = document.getElementById("lol");
 lol.addEventListener("click", ()=>{
     fetch("/login", {
