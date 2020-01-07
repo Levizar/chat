@@ -19,13 +19,13 @@
               <form class="border shadow-lg p-3 mb-3 mt-3 bg-info">
                   <div class="form-row">
                     <div class="form-group col-md-12">
-                      <label for="usernameConnection" class="text-white">Username</label>
-                      <input type="email" class="form-control" id="usernameConnection" placeholder="Username">
+                      <label for="usernameConnection" class="text-white" >Username</label>
+                      <input type="text" class="form-control" id="usernameConnection" placeholder="Username" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="pwdConnection" class="text-white">Password</label>
-                    <input type="text" class="form-control" id="mdpConnection" placeholder="Password">
+                    <input type="text" class="form-control" id="mdpConnection" placeholder="Password" required>
                   </div>
                   <button type="submit" class="btn btn-light">Sign in</button>
                   <p> No account yet? <a id="signUpLink" href="#">Sign up !</a></p>
@@ -41,16 +41,16 @@
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="usernameSignUp" class="text-white">Username</label>
-                      <input type="email" class="form-control" id="usernameSignUp" placeholder="Username">
+                      <input type="text" class="form-control" id="usernameSignUp" placeholder="Username" required maxlength="20" pattern="\w/g">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="mailSignUp" class="text-white">Mail</label>
-                    <input type="text" class="form-control" id="mailSignUp" placeholder="Your mail address">
+                    <input type="email" class="form-control" id="mailSignUp" placeholder="Your mail address" required>
                   </div>
                   <div class="form-group">
-                    <label for="pwdSignUp" class="text-white">Create a password</label>
-                    <input type="text" class="form-control" id="mdpSignUp" placeholder="Your password">
+                    <label for="pwdSignUp" class="text-white" >Create a password</label>
+                    <input type="text" class="form-control" id="mdpSignUp" placeholder="Your password" required>
                   </div>
                   <button type="submit" class="btn btn-light">Sign up</button>
                 </form>
