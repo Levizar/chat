@@ -5,6 +5,9 @@ const lol = document.getElementById("lol");
 lol.addEventListener("click", ()=>{
     fetch("/login", {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: data
     });
 })
