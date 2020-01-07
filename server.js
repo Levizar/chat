@@ -35,26 +35,19 @@ app.post("/login", (req, res) => {
         }
 
         if (data.username && data.password) {
+            const db = mysql.createConnection(dbLogin);
+            db.connect();
             db.query(`SELECT * FROM users WHERE username = '${data.username}' LIMIT 1`, (err, rows) => {
                 if (err) return console.error(err);
                 else if (rows.length) {
                     console.log("déjà dedans")
                 } else console.log("ok")
             });
+            db.end();
         } else {
             console.log("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: someone sended invalid data`);
             res.status(400).send("INVALID DATA");
         }
-        // const signUp = JSON.parse(data);
-        // const db = mysql.createConnection(dbLogin);
-        // db.connect();
-        // db.query(`SELECT * FROM users WHERE username = '${signUp.username}' LIMIT 1`, (err, rows) => {
-        //     if (err) console.error(err);
-        //     else if (rows.length) {
-        //         console.log("déjà dedans")
-        //     } else console.log("ok")
-        // });
-        // db.end();
     });
 });
 
