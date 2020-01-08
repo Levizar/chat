@@ -2,74 +2,75 @@
 <html lang="fr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Connexion page</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Connexion page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
     <ul class="nav">
-    <li class="nav-item">
-      <a class="nav-link" href="index.html">Accueil</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="chat.html">Chat</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="connexion.html">Connecte-toi !</a>
-    </li>
-    </ul>    
+        <li class="nav-item">
+            <a class="nav-link" href="index.html">Accueil</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="chat.html">Chat</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="connexion.html">Connecte-toi !</a>
+        </li>
+    </ul>
     <h1 class="mainTitle text-center text-white">Sign in or sign up to get to the chat!</h1>
     <!-- Formulaire de connexion -->
     <div id="signInForm">
-      <h3 class="text-center">Sign in</h3>
-            <div class="row d-flex justify-content-center">
-              <form class="border shadow-lg p-3 mb-3 mt-3 bg-info">
-                  <div class="form-row">
+        <h3 class="text-center">Sign in</h3>
+        <div class="row d-flex justify-content-center">
+            <form class="border shadow-lg p-3 mb-3 mt-3 bg-info">
+                <div class="form-row">
                     <div class="form-group col-md-12">
-                      <label for="usernameConnection" class="text-white" >Username</label>
-                      <input type="text" class="form-control" id="usernameConnection" placeholder="Username" required>
+                        <label for="usernameConnection" class="text-white">Username</label>
+                        <input type="text" class="form-control" id="usernameConnection" placeholder="Username" required>
                     </div>
-                  </div>
-                  <div class="form-group">
+                </div>
+                <div class="form-group">
                     <label for="pwdConnection" class="text-white">Password</label>
                     <input type="text" class="form-control" id="mdpConnection" placeholder="Password" required>
-                  </div>
-                  <button type="submit" class="btn btn-light">Sign in</button>
-                  <p> No account yet? <a id="signUpLink" href="#">Sign up !</a></p>
-                </form>
-              </div>
-      </div>
+                </div>
+                <button type="submit" class="btn btn-light">Sign in</button>
+                <p> No account yet? <a id="signUpLink" href="#">Sign up !</a></p>
+            </form>
+        </div>
+    </div>
 
-            <!-- Formulaire d'inscription -->
-          <div id="signUpForm">
-            <h3 class="text-center">Sign up</h3>
-            <div class="row d-flex justify-content-center">
-              <form class="border shadow-lg p-3 mb-3 mt-3 bg-info">
-                  <div class="form-row">
+    <!-- Formulaire d'inscription -->
+    <div id="signUpForm">
+        <h3 class="text-center">Sign up</h3>
+        <div class="row d-flex justify-content-center">
+            <form class="border shadow-lg p-3 mb-3 mt-3 bg-info">
+                <div class="form-row">
                     <div class="form-group col-md-12">
-                      <label for="usernameSignUp" class="text-white">Username</label>
-                      <input type="text" class="form-control" id="usernameSignUp" placeholder="Username" required maxlength="20" pattern="\w/g">
+                        <label for="usernameSignUp" class="text-white">Username</label>
+                        <input type="text" class="form-control" id="usernameSignUp" placeholder="Username" required
+                            maxlength="20" pattern="\w/g">
                     </div>
-                  </div>
-                  <div class="form-group">
+                </div>
+                <div class="form-group">
                     <label for="mailSignUp" class="text-white">Mail</label>
                     <input type="email" class="form-control" id="mailSignUp" placeholder="Your mail address" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="pwdSignUp" class="text-white" >Create a password</label>
+                </div>
+                <div class="form-group">
+                    <label for="pwdSignUp" class="text-white">Create a password</label>
                     <input type="text" class="form-control" id="mdpSignUp" placeholder="Your password" required>
+                </div>
+                <button type="submit" class="btn btn-light">Sign up</button>
+            </form>
         </div>
-        <button type="submit" class="btn btn-light">Sign up</button>
-      </form>
     </div>
-  </div>
 
-    
+
     <script src="assets/js/form.js"></script>
 </body>
 
