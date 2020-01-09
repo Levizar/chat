@@ -13,6 +13,7 @@ body {
         margin: 0;
         background-color: rgba($primarycolorNav, $alpha: 0.8);
     }
+
     li{
         list-style-type: none;
     }
@@ -30,6 +31,10 @@ body {
         background-color: red;
     }
 
+    #chatBox{
+        background-color: $primarycolorNav;
+    }
+    
     input {
         &:invalid {
             border: 2px solid red;

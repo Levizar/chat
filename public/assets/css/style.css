@@ -30,6 +30,10 @@ body .red {
   background-color: red;
 }
 
+body #chatBox {
+  background-color: #f5f0e3;
+}
+
 body input:invalid {
   border: 2px solid red;
 }
