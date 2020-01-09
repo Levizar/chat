@@ -8,7 +8,7 @@ const crypto = require("crypto");
 const mysql = require("mysql");
 const dbLogin = JSON.parse(fs.readFileSync("login.json"));
 // sessions
-const sessions = JSON.parse(fs.readFileSync("sessions.json"));
+const sessions = {};
 
 // EXPRESS SERVER
 
@@ -30,6 +30,7 @@ function generateSid() {
 app.get(/\/(index)?$/i, (req, res) => {
     handleSession(req.headers.cookie);
     res.sendFile(__dirname + "/public/index.html")
+    console.log(req.headers.cookie)
 });
 app.get("/chat", (req, res) => {
     res.sendFile(__dirname + "/public/chat.html");
@@ -88,6 +89,7 @@ app.post("/login", (req, res) => {
                             "username" : username
                         };
                         res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
+                        res.send("lol");
                     } else console.log("non")
                 } else console.log(rows)
             });
@@ -103,8 +105,20 @@ http.listen(8080, () => console.log("listening on port 8080"));
 
 // ---------------- SOCKET.IO ---------------- \\
 
+let guestNumber = 0;
 const io = require("socket.io")(http);
 
 io.on("connection", socket => {
-    console.log(socket.request.headers)
+    const session = handleSession(socket.request.headers.cookie);
+    const username = session ? session.username : "Guest " + ++guestNumber;
+    socket.on("message", message => {
+        if (session) {
+            const newMessage = {
+                "author"  : username,
+                "content" : message
+            };
+            socket.emit("message", newMessage)
+                  .broadcast.emit("message", newMessage);
+        }
+    });
 });
