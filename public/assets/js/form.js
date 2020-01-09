@@ -31,7 +31,7 @@ formSignUp.addEventListener("submit", async event => {
           method: "POST",
           body: data
         });
-        window.location.href = req;
+        document.location.href = "/chat";
     }catch(error){
         console.error(error)
     }
@@ -42,7 +42,7 @@ formSignUp.addEventListener("submit", async event => {
   }
 });
 
-formSignIn.addEventListener("submit", event => {
+formSignIn.addEventListener("submit", async event => {
   event.preventDefault();
   const regex = /\W/g;
   if (!regex.test(usernameSignIn)) {
@@ -55,7 +55,7 @@ formSignIn.addEventListener("submit", event => {
           method: "POST",
           body: data
         });
-        window.location.href= req;
+        // document.location.href= "/chat";
     }catch(error){
         console.error(error);
     }

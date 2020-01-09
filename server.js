@@ -8,7 +8,7 @@ const crypto = require("crypto");
 const mysql = require("mysql");
 const dbLogin = JSON.parse(fs.readFileSync("login.json"));
 // sessions
-const sessions = JSON.parse(fs.readFileSync("sessions.json"));
+const sessions = {};
 
 // EXPRESS SERVER
 
@@ -18,9 +18,13 @@ const http = require("http").createServer(app);
 
 app.disable("x-powered-by"); // Prevent express-targeted attacks
 
-function handleSession(cookies) {
+function checkSession(cookies) {
     const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);
-    return sessions[sid];
+    return sid ? sessions[sid[0]] : null;
+}
+
+function newSession(sid, data) {
+    sessions[sid] = data;
 }
 
 function generateSid() {
@@ -28,23 +32,71 @@ function generateSid() {
 }
 
 app.get(/\/(index)?$/i, (req, res) => {
-    handleSession(req.headers.cookie);
+    const session = checkSession(req.headers.cookie);
+    if (!session) {
+        const sid = generateSid();
+        res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
+        newSession(sid, null);
+    }
     res.sendFile(__dirname + "/public/index.html")
+    console.log(req.headers.cookie)
 });
 app.get("/chat", (req, res) => {
     res.sendFile(__dirname + "/public/chat.html");
 });
 app.get("/connection", (req, res) => {
-    const connectStatus = handleSession(req.headers.cookie);
+    const connectStatus = checkSession(req.headers.cookie);
     console.log(connectStatus)
-    if (connectStatus) res.sendFile(__dirname + "/public/connection.html");
-    else res.sendFile(__dirname + "/public/chat.html");
+    if (connectStatus) res.status(301).redirect("/chat");
+    else res.sendFile(__dirname + "/public/connection.html");
 });
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
-app.post("/login", (req, res) => {
+app.post("/signup", (req, res) => {
+    let data = "";
+    req.on("data", chunk => {
+        data += chunk;
+        if (data.length > 1e3) req.destroy();
+    });
 
+    req.on("end", () => {
+        try {
+            var { username, password, mail } = JSON.parse(data);
+        } catch {
+            console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to parse data`);
+            return res.status(400).send("INVALID DATA");
+        }
+
+        if (username && password && mail) {
+            // TODO: Sanitize
+            password = crypto.createHash("sha256").update(password).digest("base64"); // Hash the password
+            const db = mysql.createConnection(dbLogin);
+            db.connect();
+            db.query(
+                `INSERT INTO users (id, username, sha256_password, email) VALUES ?`, 
+                [
+                    crypto.randomBytes(16).toString("hex"),
+                    username,
+                    password,
+                    mail
+                ],
+                (err, _) => {
+                    if (err) {
+                        db.end();
+                        return console.error(err);
+                    } else {
+                        console.log("New entry successfully created");
+                    }
+                }
+            );
+            db.end();
+        }
+    });
+});
+
+app.post("/login", (req, res) => {
+    console.log("lol")
     let data = "";
     req.on("data", chunk => {
         data += chunk;
@@ -83,11 +135,13 @@ app.post("/login", (req, res) => {
                     if (userData["sha256_password"] === password) {
                         // tout est bon, on peut connecter le mec
                         const sid = generateSid();
-                        sessions[sid] = {
-                            "userId"   : userData["id"],
-                            "username" : username
-                        };
+                        newSession(sid, {
+                            "userId"    : userData["id"],
+                            "username"  : username,
+                            "connected" : true
+                        });
                         res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
+                        res.send("lol");
                     } else console.log("non")
                 } else console.log(rows)
             });
@@ -103,8 +157,24 @@ http.listen(8080, () => console.log("listening on port 8080"));
 
 // ---------------- SOCKET.IO ---------------- \\
 
+let guestNumber = 0;
 const io = require("socket.io")(http);
 
 io.on("connection", socket => {
-    console.log(socket.request.headers)
+    const session = checkSession(socket.request.headers.cookie);
+    const username = session ? session.username : "Guest " + ++guestNumber;
+    socket.on("message", message => {
+        if (session) {
+            // TODO : Sanitize message
+            const newMessage = {
+                "author"  : username,
+                "content" : message
+            };
+            socket.emit("message", newMessage)
+                  .broadcast.emit("message", newMessage);
+        }
+    });
+    socket.broadcast.emit("joinRoom", username)
+          .emit("joinRoom", username);
+    socket.on("disconnect", () => socket.broadcast.emit("leaveRoom", username));
 });
