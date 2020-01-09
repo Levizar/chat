@@ -23,6 +23,10 @@ function handleSession(cookies) {
     return sessions[sid] || null;
 }
 
+function generateSid() {
+    return Math.random().toString(36).substring(2);
+}
+
 app.get("/", (req, res) => {
     handleSession(req.headers.cookie);
     res.sendFile(__dirname + "/public/index.html")
@@ -58,7 +62,6 @@ app.post("/login", (req, res) => {
                 return console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: invalid data`);
             }
             password = crypto.createHash("sha256").update(password).digest("base64");
-            // console.log(crypto.randomBytes(16).toString("hex"))
             // PROCESS
             const db = mysql.createConnection(dbLogin);
             db.connect();
@@ -70,14 +73,13 @@ app.post("/login", (req, res) => {
                     const userData = rows[0];
                     if (userData["sha256_password"] === password) {
                         // tout est bon, on peut connecter le mec
-                        const sid = Math.random().toString(36).substring(2);
+                        const sid = generateSid();
                         sessions[sid] = {
                             "userId"   : userData["id"],
                             "username" : username
                         };
-                        console.log(sessions)
+                        res.setHeader(`Set-Cookie", "sid=${sid}; HttpOnly`);
                     } else console.log("non")
-                    // res.setHeader(`Set-Cookie", "sid=${id}; HttpOnly`);
                 } else console.log(rows)
             });
             db.end();
