@@ -1,8 +1,8 @@
 // Test to throw for production
 
 const data = {};
-data["oldID"] = "C EST MON OLD ID GROSLOUIS";
-data["Shrek"] = "PTDRLOL";
+data["username"] = "512Louis";
+data["password"] = "xdddddéééééééééééééééééééééééééééééééééééééééééé";
 const lol = document.getElementById("lol");
 lol.addEventListener("click", ()=>{
     fetch("/login", {
