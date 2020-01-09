@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const mysql = require("mysql");
 const dbLogin = JSON.parse(fs.readFileSync("login.json"));
 // sessions
+let guestUsersCounter = 0;
 const sessions = {};
 
 // EXPRESS SERVER
@@ -20,28 +21,32 @@ app.disable("x-powered-by"); // Prevent express-targeted attacks
 
 function checkSession(cookies) {
     const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);
-    return sid ? sessions[sid[0]] : null;
+    if (sid && sessions[sid[0]]) 
+        return sessions[sid[0]];
+    else 
+        return null;
 }
 
-function newSession(sid, data) {
+function newSession(res, data) {
+    const sid = Math.random().toString(36).substring(2);
+    res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
     sessions[sid] = data;
 }
 
-function generateSid() {
-    return Math.random().toString(36).substring(2);
-}
-
 app.get(/\/(index)?$/i, (req, res) => {
-    const session = checkSession(req.headers.cookie);
-    if (!session) {
-        const sid = generateSid();
-        res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
-        newSession(sid, null);
-    }
+    checkSession(req.headers.cookie) || newSession(res, {
+        "userId"    : ++guestUsersCounter,
+        "username"  : "Guest " + guestUsersCounter,
+        "isConnected" : false
+    });
     res.sendFile(__dirname + "/public/index.html")
-    console.log(req.headers.cookie)
 });
 app.get("/chat", (req, res) => {
+    checkSession(req.headers.cookie) || newSession(res, {
+        "userId"    : ++guestUsersCounter,
+        "username"  : "Guest " + guestUsersCounter,
+        "isConnected" : false
+    });
     res.sendFile(__dirname + "/public/chat.html");
 });
 app.get("/connection", (req, res) => {
@@ -134,13 +139,11 @@ app.post("/login", (req, res) => {
                     const userData = rows[0];
                     if (userData["sha256_password"] === password) {
                         // tout est bon, on peut connecter le mec
-                        const sid = generateSid();
-                        newSession(sid, {
-                            "userId"    : userData["id"],
-                            "username"  : username,
-                            "connected" : true
+                        newSession(res, {
+                            "userId"      : userData["id"],
+                            "username"    : username,
+                            "isConnected" : true
                         });
-                        res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
                         res.send("lol");
                     } else console.log("non")
                 } else console.log(rows)
@@ -153,18 +156,30 @@ app.post("/login", (req, res) => {
     });
 });
 
-http.listen(8080, () => console.log("listening on port 8080"));
+http.listen(8080, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", "Listening on port 8080."));
 
 // ---------------- SOCKET.IO ---------------- \\
 
-let guestNumber = 0;
 const io = require("socket.io")(http);
-
+const usersInTheRoom = {};
 io.on("connection", socket => {
     const session = checkSession(socket.request.headers.cookie);
-    const username = session ? session.username : "Guest " + ++guestNumber;
+    if (!session) {
+        console.error("\x1b[1m\x1b[31m%s\x1b[0m", "Connection aborted: Cannot find related session for this peer.");
+        return socket.disconnect();
+    }
+    const { username, userId, isConnected } = session;
+
+    if (usersInTheRoom[userId]) {
+        usersInTheRoom[userId]++;
+    } else {
+        usersInTheRoom[userId] = 1;
+        socket.emit("joinRoom", username)
+              .broadcast.emit("joinRoom", username);
+    }
+
     socket.on("message", message => {
-        if (session) {
+        if (isConnected) {
             // TODO : Sanitize message
             const newMessage = {
                 "author"  : username,
@@ -174,7 +189,10 @@ io.on("connection", socket => {
                   .broadcast.emit("message", newMessage);
         }
     });
-    socket.broadcast.emit("joinRoom", username)
-          .emit("joinRoom", username);
-    socket.on("disconnect", () => socket.broadcast.emit("leaveRoom", username));
+    socket.on("disconnect", () => {
+        if (!--usersInTheRoom[userId]) {
+            delete usersInTheRoom[userId];
+            socket.broadcast.emit("leaveRoom", username);
+        }
+    });
 });
