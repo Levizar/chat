@@ -31,6 +31,14 @@ app.get("/", (req, res) => {
     handleSession(req.headers.cookie);
     res.sendFile(__dirname + "/public/index.html")
 });
+app.get("/chat", (req, res) => {
+    handleSession(req.headers.cookie);
+    res.sendFile(__dirname + "/public/chat.html")
+});
+app.get("/connection", (req, res) => {
+    handleSession(req.headers.cookie);
+    res.sendFile(__dirname + "/public/connection.html")
+});
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
