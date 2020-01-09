@@ -50,13 +50,13 @@ body {
     }
 }
 
-#signIn{
+#signIn, #signUp{
     background-color: rgba($primarycolorForm, $alpha: 0.9);
 
     #signInBtn{
         background-color: $secondarycolorNav;
     }
-    
+
     #signUpLink{
         color: $secondarycolorNav;   
     }
