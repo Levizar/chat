@@ -26,12 +26,13 @@ body #signUpForm {
   display: none;
 }
 
-body .red {
-  background-color: red;
+body #chatContainer {
+  background-color: rgba(245, 240, 227, 0.6);
 }
 
-body #chatBox {
-  background-color: #f5f0e3;
+body #chatContainer #chatBox {
+  background-color: rgba(218, 142, 80, 0.3);
+  height: 70vh;
 }
 
 body input:invalid {
