@@ -20,24 +20,25 @@ app.disable("x-powered-by"); // Prevent express-targeted attacks
 
 function handleSession(cookies) {
     const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);
-    return sessions[sid] || null;
+    return sessions[sid];
 }
 
 function generateSid() {
     return Math.random().toString(36).substring(2);
 }
 
-app.get("/", (req, res) => {
+app.get(/\/(index)?$/i, (req, res) => {
     handleSession(req.headers.cookie);
     res.sendFile(__dirname + "/public/index.html")
 });
 app.get("/chat", (req, res) => {
-    handleSession(req.headers.cookie);
-    res.sendFile(__dirname + "/public/chat.html")
+    res.sendFile(__dirname + "/public/chat.html");
 });
 app.get("/connection", (req, res) => {
-    handleSession(req.headers.cookie);
-    res.sendFile(__dirname + "/public/connection.html")
+    const connectStatus = handleSession(req.headers.cookie);
+    console.log(connectStatus)
+    if (connectStatus) res.sendFile(__dirname + "/public/connection.html");
+    else res.sendFile(__dirname + "/public/chat.html");
 });
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
@@ -86,7 +87,7 @@ app.post("/login", (req, res) => {
                             "userId"   : userData["id"],
                             "username" : username
                         };
-                        res.setHeader(`Set-Cookie", "sid=${sid}; HttpOnly`);
+                        res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
                     } else console.log("non")
                 } else console.log(rows)
             });
@@ -99,3 +100,11 @@ app.post("/login", (req, res) => {
 });
 
 http.listen(8080, () => console.log("listening on port 8080"));
+
+// ---------------- SOCKET.IO ---------------- \\
+
+const io = require("socket.io")(http);
+
+io.on("connection", socket => {
+    console.log(socket.request.headers)
+});
