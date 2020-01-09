@@ -44,6 +44,14 @@ app.get("/connection", (req, res) => {
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
+app.post("/signup", (req, res) => {
+    let data = "";
+    req.on("data", chunk => {
+        data += chunk;
+        if (data.length > 1e3) req.destroy();
+    });
+});
+
 app.post("/login", (req, res) => {
 
     let data = "";
@@ -113,6 +121,7 @@ io.on("connection", socket => {
     const username = session ? session.username : "Guest " + ++guestNumber;
     socket.on("message", message => {
         if (session) {
+            // TODO : Sanitize message
             const newMessage = {
                 "author"  : username,
                 "content" : message
@@ -121,4 +130,7 @@ io.on("connection", socket => {
                   .broadcast.emit("message", newMessage);
         }
     });
+    socket.broadcast.emit("joinRoom", username)
+          .emit("joinRoom", username);
+    socket.on("disconnect", () => socket.broadcast.emit("leaveRoom", username));
 });
