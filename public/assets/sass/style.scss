@@ -33,6 +33,7 @@ body {
         #chatBox{
             background-color: rgba($secondarycolorNav, $alpha: 0.3);
             height: 70vh;
+            overflow-y: scroll;
         }
     }
 

@@ -33,6 +33,7 @@ body #chatContainer {
 body #chatContainer #chatBox {
   background-color: rgba(218, 142, 80, 0.3);
   height: 70vh;
+  overflow-y: scroll;
 }
 
 body input:invalid {
