@@ -20,7 +20,7 @@ app.disable("x-powered-by"); // Prevent express-targeted attacks
 
 function handleSession(cookies) {
     const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);
-    return sessions[sid];
+    return sid ? sessions[sid[0]] : null;
 }
 
 function generateSid() {
