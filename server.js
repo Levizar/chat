@@ -2,10 +2,13 @@
 const fs = require("fs");
 const crypto = require("crypto");
 
-// MYSQL DATABASE
+// DATABASES
 
+// mysql
 const mysql = require("mysql");
 const dbLogin = JSON.parse(fs.readFileSync("login.json"));
+// sessions
+const sessions = JSON.parse(fs.readFileSync("sessions.json"));
 
 // EXPRESS SERVER
 
@@ -15,7 +18,27 @@ const http = require("http").createServer(app);
 
 app.disable("x-powered-by"); // Prevent express-targeted attacks
 
-app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
+function handleSession(cookies) {
+    const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);
+    return sessions[sid] || null;
+}
+
+function generateSid() {
+    return Math.random().toString(36).substring(2);
+}
+
+app.get("/", (req, res) => {
+    handleSession(req.headers.cookie);
+    res.sendFile(__dirname + "/public/index.html")
+});
+app.get("/chat", (req, res) => {
+    handleSession(req.headers.cookie);
+    res.sendFile(__dirname + "/public/chat.html")
+});
+app.get("/connection", (req, res) => {
+    handleSession(req.headers.cookie);
+    res.sendFile(__dirname + "/public/connection.html")
+});
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
@@ -50,12 +73,21 @@ app.post("/login", (req, res) => {
             // PROCESS
             const db = mysql.createConnection(dbLogin);
             db.connect();
-            db.query(`SELECT sha256_password FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
+            db.query(`SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
                 if (err) {
                     db.end();
                     return console.error(err);
                 } else if (rows.length) {
-                    console.log(rows)
+                    const userData = rows[0];
+                    if (userData["sha256_password"] === password) {
+                        // tout est bon, on peut connecter le mec
+                        const sid = generateSid();
+                        sessions[sid] = {
+                            "userId"   : userData["id"],
+                            "username" : username
+                        };
+                        res.setHeader(`Set-Cookie", "sid=${sid}; HttpOnly`);
+                    } else console.log("non")
                 } else console.log(rows)
             });
             db.end();
