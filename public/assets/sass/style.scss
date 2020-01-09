@@ -1,5 +1,6 @@
 $primarycolorNav: #f5f0e3;
 $secondarycolorNav: #da8e50;
+$primarycolorForm: #394959;
 
 body {
     margin: 0;
@@ -47,3 +48,18 @@ body {
         }
     }
 }
+
+#signIn{
+    background-color: rgba($primarycolorForm, $alpha: 0.9);
+
+    #signInBtn{
+        background-color: $secondarycolorNav;
+    }
+    
+    #signUpLink{
+        color: $secondarycolorNav;   
+    }
+}
+
+
+
