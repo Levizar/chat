@@ -1,33 +1,45 @@
 body {
-  width: 100vw;
+  margin: 0;
+  padding: 0;
+  width: 100%;
   height: 100vh;
-  background: linear-gradient(136deg, #3b7d28, #000000, #ffffff) no-repeat;
-  background-size: 800% 800%;
-  -webkit-animation: AnimationName 8s ease infinite;
-          animation: AnimationName 8s ease infinite;
+  background: url("../img/cat.jpg") center center;
+  background-size: cover;
 }
 
-@-webkit-keyframes AnimationName {
-  0% {
-    background-position: 49% 0%;
-  }
-  50% {
-    background-position: 52% 100%;
-  }
-  100% {
-    background-position: 49% 0%;
-  }
+body ul.nav {
+  width: 100%;
+  margin: 0;
+  background-color: rgba(245, 240, 227, 0.8);
 }
 
-@keyframes AnimationName {
-  0% {
-    background-position: 49% 0%;
-  }
-  50% {
-    background-position: 52% 100%;
-  }
-  100% {
-    background-position: 49% 0%;
-  }
+body li {
+  list-style-type: none;
+}
+
+body #jumbotron {
+  background-color: rgba(245, 240, 227, 0.6);
+  border-radius: 2%;
+}
+
+body #signUpForm {
+  display: none;
+}
+
+body #chatContainer {
+  background-color: rgba(245, 240, 227, 0.6);
+}
+
+body #chatContainer #chatBox {
+  background-color: rgba(218, 142, 80, 0.3);
+  height: 70vh;
+}
+
+body input:invalid {
+  border: 2px solid red;
+}
+
+body input:valid {
+  border: 2px solid green;
 }
 /*# sourceMappingURL=style.css.map */

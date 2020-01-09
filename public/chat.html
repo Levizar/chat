@@ -6,10 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Becode's chat</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
-
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" href="index.html">Accueil</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="chat.html">Chat</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="connexion.html">Connecte-toi !</a>
+        </li>
+    </ul>
+    <div class="container pt-3 mt-4" id="chatContainer">
+        <div class="row">
+            <div class="col-13 col-md-3">
+                <!-- Button to change in "hamburger menu" button -->
+                <button class="btn btn-primary my-1" type="button" data-toggle="collapse" data-target="#saloonCollapse" aria-expanded="false" aria-controls="collapseExample">
+                    Afficher/Cacher les salons
+                </button>
+                <ul class="collapse" id="saloonCollapse">
+                    <li>Salon de l'ambiance</li>
+                    <li>Salon des familles</li>
+                    <li>Le BON salon</li>
+                </ul>
+            </div>
+            <div class="col-13 col-md-9">
+                <div class="col-md-13">
+                    <div id="chatBox" class="col-md-13 my-1 mb-2 p-3">
+                        <p>Chat box</p>
+                    </div>
+                </div>
+                <div class="col-md-13">
+                    <form type="text-area" method="post" id="chatForm" class="col-13 col-md-13 d-flex justify-content-between">
+                        <textarea name="chatMessage" id="chatMessage" class="col-13 col-md-10 my-1 mb-3" placeholder="Ton message ici"></textarea>
+                        <button class="col-13 col-md-2 ml-md-2 ml-0 my-1 mb-3">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 
-</html>
+</html>    

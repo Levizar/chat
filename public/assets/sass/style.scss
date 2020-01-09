@@ -1,22 +1,49 @@
+$primarycolorNav: #f5f0e3;
+$secondarycolorNav: #da8e50;
+
 body {
-    width: 100vw;
+    margin: 0;
+    padding: 0;
+    width: 100%;
     height: 100vh;
-    background: linear-gradient(136deg, #3b7d28, #000000, #ffffff) no-repeat;
-    background-size: 800% 800%;
-    animation: AnimationName 8s ease infinite;
+    background: url('../img/cat.jpg') center center;
+    background-size: cover;
 
-}
-
-@keyframes AnimationName {
-    0% {
-        background-position: 49% 0%
+    ul.nav {
+        width: 100%;
+        margin: 0;
+        background-color: rgba($primarycolorNav, $alpha: 0.8);
     }
 
-    50% {
-        background-position: 52% 100%
+    li{
+        list-style-type: none;
     }
 
-    100% {
-        background-position: 49% 0%
+    #jumbotron {
+        background-color: rgba($primarycolorNav, $alpha: 0.6);
+        border-radius: 2%;
+    }
+
+    #signUpForm {
+        display: none;
+    }
+
+    #chatContainer{
+        background-color: rgba($primarycolorNav, $alpha: 0.6);
+        #chatBox{
+            background-color: rgba($secondarycolorNav, $alpha: 0.3);
+            height: 70vh;
+        }
+    }
+
+    
+    input {
+        &:invalid {
+            border: 2px solid red;
+        }
+
+        &:valid {
+            border: 2px solid green;
+        }
     }
 }
