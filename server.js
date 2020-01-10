@@ -11,13 +11,16 @@ const dbLogin = JSON.parse(fs.readFileSync("login.json"));
 const sessionManager = require("./src/sessionManager.js");
 let guestUsersCounter = 0;
 
-// EXPRESS SERVER
+
+// ----------------- EXPRESS: set up ------------------ \\
 
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 
 app.disable("x-powered-by"); // Prevent express-targeted attacks
+
+// ----------------- EXPRESS: routage ----------------- \\
 
 app.get(/\/(index)?$/i, (req, res) => {
     sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
@@ -27,6 +30,7 @@ app.get(/\/(index)?$/i, (req, res) => {
     });
     res.sendFile(__dirname + "/public/index.html")
 });
+
 app.get("/chat", (req, res) => {
     sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
         "userId"    : ++guestUsersCounter,
@@ -35,11 +39,13 @@ app.get("/chat", (req, res) => {
     });
     res.sendFile(__dirname + "/public/chat.html");
 });
+
 app.get("/connection", (req, res) => {
-    const { isConnected } = sessionManager.checkSession(req.headers.cookie);
-    if (isConnected) res.status(301).redirect("/chat");
-    else res.sendFile(__dirname + "/public/connection.html");
+    // If the user is already connected, redirect him to the chat room
+    const session = sessionManager.checkSession(req.headers.cookie);
+    session && session.isConnected ? res.status(301).redirect("/chat") : res.sendFile(__dirname + "/public/connection.html");
 });
+
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
@@ -86,7 +92,6 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    console.log("lol")
     let data = "";
     req.on("data", chunk => {
         data += chunk;
@@ -130,6 +135,7 @@ app.post("/login", (req, res) => {
                             "isConnected" : true
                         });
                         res.send("lol");
+                        console.log(`%s${username} %sconnected`, "\x1b[1m\x1b[34m", "\x1b[1m\x1b[32m", "\x1b[0m");
                     } else console.log("non")
                 } else console.log(rows)
             });
@@ -149,13 +155,13 @@ const io = require("socket.io")(http);
 const usersInTheRoom = {};
 io.on("connection", socket => {
     const session = sessionManager.checkSession(socket.request.headers.cookie);
-    if (!session) {
+    if (session === null) {
         console.error("\x1b[1m\x1b[31m%s\x1b[0m", "Connection aborted: Cannot find related session for this peer.");
         return socket.disconnect();
     }
     const { username, userId, isConnected } = session;
 
-    if (usersInTheRoom[userId]) {
+    if (usersInTheRoom[userId] !== void null) {
         usersInTheRoom[userId]++;
     } else {
         usersInTheRoom[userId] = 1;
