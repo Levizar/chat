@@ -44,15 +44,27 @@ body input:valid {
   border: 2px solid green;
 }
 
-#signIn, #signUp {
+#signIn {
   background-color: rgba(57, 73, 89, 0.9);
 }
 
-#signIn #signInBtn, #signUp #signInBtn {
+#signIn #signInBtn {
   background-color: #da8e50;
 }
 
-#signIn #signUpLink, #signUp #signUpLink {
+#signIn #signUpLink {
+  color: #da8e50;
+}
+
+#signUp {
+  background-color: rgba(57, 73, 89, 0.9);
+}
+
+#signUp #signUpBtn {
+  background-color: #da8e50;
+}
+
+#signUp #signInLink {
   color: #da8e50;
 }
 /*# sourceMappingURL=style.css.map */

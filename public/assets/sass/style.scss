@@ -50,7 +50,7 @@ body {
     }
 }
 
-#signIn, #signUp{
+#signIn{
     background-color: rgba($primarycolorForm, $alpha: 0.9);
 
     #signInBtn{
@@ -58,6 +58,18 @@ body {
     }
 
     #signUpLink{
+        color: $secondarycolorNav;   
+    }
+}
+
+#signUp{
+    background-color: rgba($primarycolorForm, $alpha: 0.9);
+
+    #signUpBtn{
+        background-color: $secondarycolorNav;
+    }
+
+    #signInLink{
         color: $secondarycolorNav;   
     }
 }
