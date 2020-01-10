@@ -8,8 +8,8 @@ const crypto = require("crypto");
 const mysql = require("mysql");
 const dbLogin = JSON.parse(fs.readFileSync("login.json"));
 // sessions
+const sessionManager = require("./src/sessionManager.js");
 let guestUsersCounter = 0;
-const sessions = {};
 
 // EXPRESS SERVER
 
@@ -19,22 +19,8 @@ const http = require("http").createServer(app);
 
 app.disable("x-powered-by"); // Prevent express-targeted attacks
 
-function checkSession(cookies) {
-    const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);
-    if (sid && sessions[sid[0]]) 
-        return sessions[sid[0]];
-    else 
-        return null;
-}
-
-function newSession(res, data) {
-    const sid = Math.random().toString(36).substring(2);
-    res.setHeader("Set-Cookie", `sid=${sid}; HttpOnly`);
-    sessions[sid] = data;
-}
-
 app.get(/\/(index)?$/i, (req, res) => {
-    checkSession(req.headers.cookie) || newSession(res, {
+    sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
         "userId"    : ++guestUsersCounter,
         "username"  : "Guest " + guestUsersCounter,
         "isConnected" : false
@@ -42,7 +28,7 @@ app.get(/\/(index)?$/i, (req, res) => {
     res.sendFile(__dirname + "/public/index.html")
 });
 app.get("/chat", (req, res) => {
-    checkSession(req.headers.cookie) || newSession(res, {
+    sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
         "userId"    : ++guestUsersCounter,
         "username"  : "Guest " + guestUsersCounter,
         "isConnected" : false
@@ -50,9 +36,8 @@ app.get("/chat", (req, res) => {
     res.sendFile(__dirname + "/public/chat.html");
 });
 app.get("/connection", (req, res) => {
-    const connectStatus = checkSession(req.headers.cookie);
-    console.log(connectStatus)
-    if (connectStatus) res.status(301).redirect("/chat");
+    const { isConnected } = sessionManager.checkSession(req.headers.cookie);
+    if (isConnected) res.status(301).redirect("/chat");
     else res.sendFile(__dirname + "/public/connection.html");
 });
 app.use(express.static(__dirname + "/public")); // Serve assets
@@ -139,7 +124,7 @@ app.post("/login", (req, res) => {
                     const userData = rows[0];
                     if (userData["sha256_password"] === password) {
                         // tout est bon, on peut connecter le mec
-                        newSession(res, {
+                        sessionManager.newSession(res, {
                             "userId"      : userData["id"],
                             "username"    : username,
                             "isConnected" : true
@@ -163,7 +148,7 @@ http.listen(8080, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", "Listening on po
 const io = require("socket.io")(http);
 const usersInTheRoom = {};
 io.on("connection", socket => {
-    const session = checkSession(socket.request.headers.cookie);
+    const session = sessionManager.checkSession(socket.request.headers.cookie);
     if (!session) {
         console.error("\x1b[1m\x1b[31m%s\x1b[0m", "Connection aborted: Cannot find related session for this peer.");
         return socket.disconnect();
@@ -190,7 +175,7 @@ io.on("connection", socket => {
         }
     });
     socket.on("disconnect", () => {
-        if (!--usersInTheRoom[userId]) {
+        if (--usersInTheRoom[userId] === 0) {
             delete usersInTheRoom[userId];
             socket.broadcast.emit("leaveRoom", username);
         }
