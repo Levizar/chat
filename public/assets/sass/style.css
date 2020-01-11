@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  background: url("../img/cat.jpg") center center;
+  background-size: cover;
+}
+
+body ul.nav {
+  width: 100%;
+  margin: 0;
+  background-color: rgba(245, 240, 227, 0.8);
+}
+
+body li {
+  list-style-type: none;
+}
+
+body #jumbotron {
+  background-color: rgba(245, 240, 227, 0.6);
+  border-radius: 2%;
+}
+
+body #signUpForm {
+  display: none;
+}
+
+body #chatContainer {
+  background-color: rgba(245, 240, 227, 0.6);
+}
+
+body #chatContainer #chatBox {
+  background-color: rgba(218, 142, 80, 0.3);
+  height: 70vh;
+  overflow-y: scroll;
+}
+
+body input:invalid {
+  border: 2px solid red;
+}
+
+body input:valid {
+  border: 2px solid green;
+}
+
+#signIn {
+  background-color: rgba(57, 73, 89, 0.9);
+}
+
+#signIn #signInBtn {
+  background-color: #da8e50;
+}
+
+#signIn #signUpLink {
+  color: #da8e50;
+}
+/*# sourceMappingURL=style.css.map */
