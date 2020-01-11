@@ -42,6 +42,7 @@ app.get("/chat", (req, res) => {
         "isConnected" : false
     });
 
+    // Change the connection button with a logout button if the user is already connected
     if (session.isConnected) {
         fs.readFile(__dirname + "/public/chat.html", "UTF-8", (err, data) => {
             if (err) console.error(err);
@@ -58,6 +59,7 @@ app.get("/connection", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
+    // If a related session exists, delete it
     if (sessionManager.checkSession(req.headers.cookie) !== null) 
         delete sessionManager.sessions[sessionManager.getSid(req.headers.cookie)];
     res.status(301).redirect("/");
@@ -66,6 +68,7 @@ app.get("/logout", (req, res) => {
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
+// Handle sign up requests
 app.post("/signup", (req, res) => {
     let data = "";
     req.on("data", chunk => {
@@ -108,7 +111,7 @@ app.post("/signup", (req, res) => {
                 console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: unavailable username`);
                 return res.status(403).send("UNAVAILABLE USERNAME");
             } else {
-                // Create new user account
+                // Create a new user account
                 const userId = crypto.randomBytes(16).toString("hex");
                 db.query(
                     `INSERT INTO users (id, username, sha256_password, email) VALUES (?, ?, ?, ?)`, 
@@ -139,6 +142,7 @@ app.post("/signup", (req, res) => {
     });
 });
 
+// Handle sign in requests
 app.post("/login", (req, res) => {
     let data = "";
     req.on("data", chunk => {
