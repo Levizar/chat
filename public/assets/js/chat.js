@@ -10,3 +10,7 @@ socket.on("joinRoom", username => {
 socket.on("leaveRoom", username => {
     alert(username + " est parti");
 })
+
+socket.on("disconnected", () => {
+    // TODO : prévenir le mec qu'il a été déconnecté et lui proposer d'actualiser la page
+});
