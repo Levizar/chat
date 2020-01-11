@@ -4,7 +4,7 @@
  * @author Louis Wicket
  */
 
-const sanitizePattern = {
+const sanitizationRules = {
     "username" : {
         "minLength" : 3,
         "maxLength" : 20,
@@ -23,13 +23,13 @@ const sanitizePattern = {
 };
 
 /**
- * @description Sanitize data according to a pre-defined pattern
+ * @description Sanitize data according to pre-defined rules
  * @param { String } type Type of data to sanitize
  * @param { String } v Variable to sanitize
  * @returns { (String | Error) } Return the sanitized variable or return an error if the provided variable isn't valid
  */
 exports.sanitize = (type, v) => {
-    const { minLength, maxLength, regex } = sanitizePattern[type];
+    const { minLength, maxLength, regex } = sanitizationRules[type];
     if (typeof v !== "string") return new TypeError(type + " should be typeof String");
     v = v.trim();
     const length = v.length;

@@ -171,10 +171,12 @@ io.on("connection", socket => {
     }
     const { username, userId, isConnected } = session;
 
-    if (usersInTheRoom[userId] !== void null) {
-        usersInTheRoom[userId]++;
+    if (session.socket !== void null) {
+        session.socket++;
     } else {
-        usersInTheRoom[userId] = 1;
+        session.socket = 1;
+        usersInTheRoom[userId] = username;
+        socket.emit("roomData", usersInTheRoom);
         socket.emit("joinRoom", username)
               .broadcast.emit("joinRoom", username);
     }
@@ -191,8 +193,8 @@ io.on("connection", socket => {
         }
     });
     socket.on("disconnect", () => {
-        if (--usersInTheRoom[userId] === 0) {
-            delete usersInTheRoom[userId];
+        if (--session.socket === 0) {
+            delete usersInTheRoom.userId;
             socket.broadcast.emit("leaveRoom", username);
         }
     });
