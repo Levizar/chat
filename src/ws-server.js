@@ -9,14 +9,13 @@ exports.init = (io, sessionManager) => {
         }
         const { username, userId, isConnected } = session;
 
-        if (session.socket !== void null) {
+        if (Boolean(session.socket) !== false) {
             session.socket++;
         } else {
             session.socket = 1;
             usersInTheRoom[userId] = username;
             socket.emit("roomData", usersInTheRoom);
-            socket.emit("joinRoom", username)
-                .broadcast.emit("joinRoom", username);
+            io.emit("joinRoom", username);
         }
 
         socket.on("message", message => {
@@ -26,8 +25,7 @@ exports.init = (io, sessionManager) => {
                     "author"  : username,
                     "content" : message
                 };
-                socket.emit("message", newMessage)
-                    .broadcast.emit("message", newMessage);
+                io.emit("message", newMessage);
             }
         });
         socket.on("disconnect", () => {

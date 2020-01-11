@@ -26,22 +26,41 @@ app.disable("x-powered-by"); // Prevent express-targeted attacks
 // ----------------- EXPRESS: routage ----------------- \\
 
 app.get(/\/(index)?$/i, (req, res) => {
-    res.status(200).sendFile(__dirname + "/public/index.html");
+    const session = sessionManager.checkSession(req.headers.cookie);
+    if (session && session.isConnected) {
+        fs.readFile(__dirname + "/public/index.html", "UTF-8", (err, data) => {
+            if (err) console.error(err);
+            else res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
+        });
+    } else res.status(200).sendFile(__dirname + "/public/index.html");
 });
 
 app.get("/chat", (req, res) => {
-    sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
+    const session = sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
         "userId"      : ++guestUsersCounter,
         "username"    : "Guest " + guestUsersCounter,
         "isConnected" : false
     });
-    res.status(200).sendFile(__dirname + "/public/chat.html");
+
+    if (session.isConnected) {
+        fs.readFile(__dirname + "/public/chat.html", "UTF-8", (err, data) => {
+            if (err) console.error(err);
+            else res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
+        });
+    } else res.status(200).sendFile(__dirname + "/public/chat.html");
+    console.log(sessionManager.sessions)
 });
 
 app.get("/connection", (req, res) => {
     // If the user is already connected, redirect him to the chat room
     const session = sessionManager.checkSession(req.headers.cookie); // (Waiting for optional chaining ToT)
     session && session.isConnected ? res.status(301).redirect("/chat") : res.status(200).sendFile(__dirname + "/public/connection.html");
+});
+
+app.get("/logout", (req, res) => {
+    if (sessionManager.checkSession(req.headers.cookie) !== null) 
+        delete sessionManager.sessions[sessionManager.getSid(req.headers.cookie)];
+    res.status(301).redirect("/");
 });
 
 app.use(express.static(__dirname + "/public")); // Serve assets
