@@ -7,7 +7,7 @@ body {
   background-size: cover;
 }
 
-body ul.nav {
+body nav {
   width: 100%;
   margin: 0;
   background-color: rgba(245, 240, 227, 0.8);
