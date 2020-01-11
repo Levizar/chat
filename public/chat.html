@@ -13,28 +13,41 @@
 </head>
 
 <body>
-    <ul class="nav">
-        <li class="nav-item">
-            <a class="nav-link" href="/">Accueil</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="chat">Chat</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="connection">Connecte-toi !</a>
-        </li>
-    </ul>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav w-100">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="chat">Chat</a>
+                    </li>
+                    <li class="nav-item ml-lg-auto">
+                        <a class="nav-link" href="connection">Connecte-toi !</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
     <div class="container pt-3 mt-4" id="chatContainer">
         <div class="row">
             <div class="col-13 col-md-3">
                 <!-- Button to change in "hamburger menu" button -->
-                <button class="btn btn-primary my-1" type="button" data-toggle="collapse" data-target="#saloonCollapse" aria-expanded="false" aria-controls="collapseExample">
-                    Afficher/Cacher les salons
+                <button class="btn btn-primary my-1" type="button" data-toggle="collapse" data-target="#userList"
+                    aria-expanded="true" aria-controls="List of users expander">
+                    Liste des utilisateurs
                 </button>
-                <ul class="collapse" id="saloonCollapse">
-                    <li>Salon de l'ambiance</li>
-                    <li>Salon des familles</li>
-                    <li>Le BON salon</li>
+                <ul class="collapse" id="userList">
+                    <!-- Template pour la liste des utilisateurs -->
+                    <template>
+                        <li></li>
+                    </template>
                 </ul>
             </div>
             <div class="col-13 col-md-9">
@@ -44,8 +57,10 @@
                     </div>
                 </div>
                 <div class="col-md-13">
-                    <form type="text-area" method="post" id="chatForm" class="col-13 col-md-13 d-flex justify-content-between">
-                        <textarea name="chatMessage" id="chatMessage" class="col-13 col-md-10 my-1 mb-3" placeholder="Ton message ici"></textarea>
+                    <form type="text-area" method="post" id="chatForm"
+                        class="col-13 col-md-13 d-flex justify-content-between">
+                        <textarea name="chatMessage" id="chatMessage" class="col-13 col-md-10 my-1 mb-3"
+                            placeholder="Ton message ici"></textarea>
                         <button class="col-13 col-md-2 ml-md-2 ml-0 my-1 mb-3">Send</button>
                     </form>
                 </div>
@@ -54,9 +69,15 @@
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/chat.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
 </body>
 
-</html>    
+</html>
