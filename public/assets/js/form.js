@@ -9,58 +9,52 @@ document.getElementById("signInLink").addEventListener("click", () => {
   document.getElementById("signInForm").style.display = "block";
 });
 
-//Don't allow to send the forms
-const formSignUp = document.getElementById("signUp");
-const formSignIn = document.getElementById("signInBtn");
+// Send Form SignIn
+document.getElementById("signInBtn").addEventListener("click", async () => {
+  const usernameSignIn = document.getElementById('usernameSignIn').value;
+  const passwordSignIn = document.getElementById('pwdConnection').value;
+  if (!/\W/g.test(usernameSignIn)) {
+    try {
+      const req = await fetch("/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: usernameSignIn,
+          password: passwordSignIn
+        })
+      });
+      if (req.status >= 400) {
+        // Une erreur est survenue : veuiller re-essayer
+        console.log("une erreur est survenue, veuillez re-essayer plus tard")
 
-formSignUp.addEventListener("submit", async event => {
-  event.preventDefault();
-  const regex = /\W/g;
-  if (!regex.test(usernameSignUp)) {
-    let usernameSignUp = document.getElementById("usernameSignUp").value;
-    let passwordSignUp = document.getElementById("pwdSignUp").value;
-    let mailSignUp = document.getElementById("mailSignUp").value;
-    let data = {
-      username: usernameSignUp,
-      password: passwordSignUp,
-      mail: mailSignUp
-    };
-    data = JSON.stringify(data);
-    try{
-        const req = await fetch("/signup", {
-          method: "POST",
-          body: data
-        });
-        document.location.href = "/chat";
-    }catch(error){
-        console.error(error)
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-  }else{
-      // If it is not ok color the border in red
-
   }
-});
+})
 
-formSignIn.addEventListener("submit", async event => {
-  event.preventDefault();
-  const regex = /\W/g;
-  if (!regex.test(usernameSignIn)) {
-    let usernameSignIn = document.getElementById("usernameSignIn").value;
-    let passwordSignIn = document.getElementById("pwdSignIn").value;
-    let data = { username: usernameSignIn, password: passwordSignIn };
-    data = JSON.stringify(data);
-    try{
-        const req = await fetch("/login", {
-          method: "POST",
-          body: data
-        });
-        // document.location.href= "/chat";
-    }catch(error){
-        console.error(error);
+// Send Form SignUp
+document.getElementById('signUp').addEventListener("click", async () => {
+  const usernameSignUp = document.getElementById('usernameSignUp').value;
+  const passwordSignUp = document.getElementById('pwdSignUp').value;
+  const mailSignUp = document.getElementById("mailSignUp").value;
+  if (!/\W/g.test(usernameSignUp)) {
+    try {
+      const req = await fetch("/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          username: usernameSignUp,
+          password: passwordSignUp,
+          mail: mailSignUp
+        })
+      });
+      if (req.status >= 400) {
+        // Une erreur est survenue : veuiller re-essayer plus tard
+        console.log("une erreur est survenue, veuillez re-essayer plus tard")
+
+      }
+    } catch (error) {
+      console.error(error);
     }
-  }else{
-      // If it is not ok color the border in red
-      
   }
-});
+})
