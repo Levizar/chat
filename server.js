@@ -10,8 +10,8 @@ const crypto = require("crypto");
 const mysql = require("mysql");
 const dbLogin = JSON.parse(fs.readFileSync("login.json"));
 
-const sessionManager = require("./src/sessionManager.js");
-const { sanitize } = require("./src/sanitize.js");
+const sessionManager = require("./src/sessionManager.js"); // A custom module to handle sessions
+const { sanitize } = require("./src/sanitize.js"); // A custom module to sanitize inputs
 let guestUsersCounter = 0;
 
 
@@ -26,16 +26,30 @@ app.disable("x-powered-by"); // Prevent express-targeted attacks
 // ----------------- EXPRESS: routage ----------------- \\
 
 app.get(/\/(index)?$/i, (req, res) => {
-    res.status(200).sendFile(__dirname + "/public/index.html");
+    const session = sessionManager.checkSession(req.headers.cookie);
+    // Change the connection button with a logout button if the user is already connected
+    if (session && session.isConnected) {
+        fs.readFile(__dirname + "/public/index.html", "UTF-8", (err, data) => {
+            if (err) console.error(err);
+            else res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
+        });
+    } else res.status(200).sendFile(__dirname + "/public/index.html");
 });
 
 app.get("/chat", (req, res) => {
-    sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
+    const session = sessionManager.checkSession(req.headers.cookie) || sessionManager.newSession(res, {
         "userId"      : ++guestUsersCounter,
         "username"    : "Guest " + guestUsersCounter,
         "isConnected" : false
     });
-    res.status(200).sendFile(__dirname + "/public/chat.html");
+
+    // Change the connection button with a logout button if the user is already connected
+    if (session.isConnected) {
+        fs.readFile(__dirname + "/public/chat.html", "UTF-8", (err, data) => {
+            if (err) console.error(err);
+            else res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
+        });
+    } else res.status(200).sendFile(__dirname + "/public/chat.html");
 });
 
 app.get("/connection", (req, res) => {
@@ -44,9 +58,17 @@ app.get("/connection", (req, res) => {
     session && session.isConnected ? res.status(301).redirect("/chat") : res.status(200).sendFile(__dirname + "/public/connection.html");
 });
 
+app.get("/logout", (req, res) => {
+    // If a related session exists, delete it
+    if (sessionManager.checkSession(req.headers.cookie) !== null) 
+        delete sessionManager.sessions[sessionManager.getSid(req.headers.cookie)];
+    res.status(301).redirect("/");
+});
+
 app.use(express.static(__dirname + "/public")); // Serve assets
 app.get("*", (_, res) => res.status(404).send("error 404"));
 
+// Handle sign up requests
 app.post("/signup", (req, res) => {
     let data = "";
     req.on("data", chunk => {
@@ -81,15 +103,13 @@ app.post("/signup", (req, res) => {
         // Check that the username is available
         db.query(`SELECT id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
             if (err) {
-                db.end();
+                console.error(err);
                 res.status(500).send();
-                return console.error(err);
             } else if (rows.length !== 0) {
-                db.end();
                 console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: unavailable username`);
-                return res.status(403).send("UNAVAILABLE USERNAME");
+                res.status(403).send("UNAVAILABLE USERNAME");
             } else {
-                // Create new user account
+                // Create a new user account
                 const userId = crypto.randomBytes(16).toString("hex");
                 db.query(
                     `INSERT INTO users (id, username, sha256_password, email) VALUES (?, ?, ?, ?)`, 
@@ -101,9 +121,10 @@ app.post("/signup", (req, res) => {
                     ],
                     (err, _) => {
                         if (err) {
-                            db.end();
-                            return console.error(err);
-                        } else {
+                            console.error(err);
+                            res.status(500).send();
+                        }
+                        else {
                             console.log("\x1b[1m\x1b[32m%s\x1b[0m", `New account created: ${username}.`);
                             sessionManager.newSession(res, {
                                 "userId"      : userId,
@@ -120,6 +141,7 @@ app.post("/signup", (req, res) => {
     });
 });
 
+// Handle sign in requests
 app.post("/login", (req, res) => {
     let data = "";
     req.on("data", chunk => {
@@ -154,9 +176,8 @@ app.post("/login", (req, res) => {
         db.connect();
         db.query(`SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
             if (err) {
-                db.end();
+                console.error(err);
                 res.status(500).send();
-                return console.error(err);
             } else if (rows.length !== 0) {
                 const userData = rows[0];
                 if (userData["sha256_password"] === password) {
