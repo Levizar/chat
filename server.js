@@ -59,7 +59,7 @@ app.post("/signup", (req, res) => {
 
     req.on("end", () => {
         try {
-            var { username, password, mail } = JSON.parse(data);
+            var { username, password, email } = JSON.parse(data);
         } catch {
             console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to parse data`);
             return res.status(400).send("INVALID DATA");
@@ -67,7 +67,7 @@ app.post("/signup", (req, res) => {
 
         username = sanitize("username", username);
         password = sanitize("password", password);
-        email = sanitize("email", mail);
+        email = sanitize("email", email);
 
         if (username instanceof Error || password instanceof Error || email instanceof Error) {
             res.status(400).send("INVALID DATA");
@@ -78,24 +78,45 @@ app.post("/signup", (req, res) => {
         
         const db = mysql.createConnection(dbLogin);
         db.connect();
-        db.query(
-            `INSERT INTO users (id, username, sha256_password, email) VALUES ?`, 
-            [
-                crypto.randomBytes(16).toString("hex"),
-                username,
-                password,
-                mail
-            ],
-            (err, _) => {
-                if (err) {
-                    db.end();
-                    return console.error(err);
-                } else {
-                    console.log("New entry successfully created");
-                }
+        // Check that the username is available
+        db.query(`SELECT id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
+            if (err) {
+                db.end();
+                res.status(500).send();
+                return console.error(err);
+            } else if (rows.length !== 0) {
+                db.end();
+                console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: unavailable username`);
+                return res.status(403).send("UNAVAILABLE USERNAME");
+            } else {
+                // Create new user account
+                const userId = crypto.randomBytes(16).toString("hex");
+                db.query(
+                    `INSERT INTO users (id, username, sha256_password, email) VALUES (?, ?, ?, ?)`, 
+                    [
+                        userId,
+                        username,
+                        password,
+                        email
+                    ],
+                    (err, _) => {
+                        if (err) {
+                            db.end();
+                            return console.error(err);
+                        } else {
+                            console.log("\x1b[1m\x1b[32m%s\x1b[0m", `New account created: ${username}.`);
+                            sessionManager.newSession(res, {
+                                "userId"      : userId,
+                                "username"    : username,
+                                "isConnected" : true
+                            });
+                            res.status(200).send("Account successfully created");
+                        }
+                    }
+                );
+                db.end();
             }
-        );
-        db.end();
+        });
     });
 });
 
@@ -134,6 +155,7 @@ app.post("/login", (req, res) => {
         db.query(`SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
             if (err) {
                 db.end();
+                res.status(500).send();
                 return console.error(err);
             } else if (rows.length !== 0) {
                 const userData = rows[0];
@@ -147,16 +169,20 @@ app.post("/login", (req, res) => {
                     res.status(200).send("USER SUCCESSFULLY AUTHENTICATED");
                     console.log(`%s${username} %sconnected`, "\x1b[1m\x1b[34m", "\x1b[1m\x1b[32m", "\x1b[0m");
                 } else {
-                    console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to authenticate the user`);
+                    console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: the password doesn't match`);
                     res.status(403).send("WRONG LOGIN DETAILS");
                 }
-            } else console.log(rows)
+            } else {
+                console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to authenticate the user`);
+                res.status(403).send("WRONG LOGIN DETAILS");
+            }
         });
         db.end();
     });
 });
 
-http.listen(8080, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", "Listening on port 8080."));
+const port = 8080;
+http.listen(port, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", `Listening on port ${8080}.`));
 
 // ---------------- SOCKET.IO ---------------- \\
 

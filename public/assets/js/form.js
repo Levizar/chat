@@ -26,7 +26,7 @@ document.getElementById("signInBtn").addEventListener("click", async () => {
         // Une erreur est survenue : veuiller re-essayer
         console.log("une erreur est survenue, veuillez re-essayer plus tard")
 
-      }
+      } else document.location.href = "/chat";
     } catch (error) {
       console.error(error);
     }
@@ -45,14 +45,14 @@ document.getElementById('signUpBtn').addEventListener("click", async () => {
         body: JSON.stringify({
           username: usernameSignUp,
           password: passwordSignUp,
-          mail: mailSignUp
+          email: mailSignUp
         })
       });
       if (req.status >= 400) {
         // Une erreur est survenue : veuiller re-essayer plus tard
         console.log("une erreur est survenue, veuillez re-essayer plus tard")
 
-      }
+      } else document.location.href = "/chat";
     } catch (error) {
       console.error(error);
     }
