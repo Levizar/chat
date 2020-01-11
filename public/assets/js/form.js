@@ -34,7 +34,7 @@ document.getElementById("signInBtn").addEventListener("click", async () => {
 })
 
 // Send Form SignUp
-document.getElementById('signUp').addEventListener("click", async () => {
+document.getElementById('signUpBtn').addEventListener("click", async () => {
   const usernameSignUp = document.getElementById('usernameSignUp').value;
   const passwordSignUp = document.getElementById('pwdSignUp').value;
   const mailSignUp = document.getElementById("mailSignUp").value;
