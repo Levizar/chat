@@ -37,7 +37,6 @@ body {
             overflow-y: scroll;
         }
     }
-
     
     input {
         &:invalid {
@@ -60,6 +59,11 @@ body {
     #signUpLink{
         color: $secondarycolorNav;   
     }
+}
+
+textarea {
+    resize: none !important;
+    overflow-y: scroll;
 }
 
 
