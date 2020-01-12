@@ -49,7 +49,7 @@ app.get("/chat", (req, res) => {
             // Change the connection button with a logout button if the user is already connected
             res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
         } else {
-            res.status(200).send(data.replace('Ton message ici"', 'Connecte-toi pour pouvoir écrire" DISABLED'));
+            res.status(200).send(data.replace('Ton message ici"', 'Connecte-toi pour pouvoir écrire !" DISABLED').replace(">Envoyer", "DISABLED>Envoyer"));
         }
     });
 });
