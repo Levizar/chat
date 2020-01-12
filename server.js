@@ -202,7 +202,7 @@ app.post("/login", (req, res) => {
     });
 });
 
-const port = 80;
+const port = 8080;
 http.listen(port, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", `Listening on port ${port}.`));
 
 // ---------------- SOCKET.IO ---------------- \\
