@@ -6,6 +6,24 @@
 
 module.exports = {
     sessions: {},
+    failedAttempts: {},
+
+    getIp(req) {
+        try {
+            var ip = (req.headers["x-forwarded-for"] || "").split(",").pop() ||
+                      req.connection.remoteAddress ||
+                      req.socket.remoteAddress ||
+                      req.connection.socket.remoteAddress;
+        } catch {
+            console.error("\x1b[1m\x1b[31m%s\x1b[0m", "Cannot get the IP if this user");
+            return null;
+        }
+        return ip;
+    },
+
+    isBlacklisted(ip) {
+        return ip !== null ? this.failedAttempts[ip] >= 10 : false;
+    },
 
     getSid(cookies) {
         const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);

@@ -153,6 +153,9 @@ app.post("/login", (req, res) => {
     });
 
     req.on("end", () => {
+        const ip = sessionManager.getIp(req);
+        console.log(ip)
+        if (sessionManager.isBlacklisted(ip)) return res.status(429).send("TOO MANY REQUESTS");
         try {
             var { username, password } = JSON.parse(data);
         } catch {
@@ -190,6 +193,7 @@ app.post("/login", (req, res) => {
                     res.status(200).send("USER SUCCESSFULLY AUTHENTICATED");
                     console.log(`%s${username} %sconnected`, "\x1b[1m\x1b[34m", "\x1b[1m\x1b[32m", "\x1b[0m");
                 } else {
+                    sessionManager.failedAttempts[ip] ? sessionManager.failedAttempts[ip]++ : sessionManager.failedAttempts[ip] = 1;
                     console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: the password doesn't match`);
                     res.status(403).send("WRONG LOGIN DETAILS");
                 }
