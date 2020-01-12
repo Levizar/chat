@@ -26,14 +26,16 @@ body #signUpForm {
   display: none;
 }
 
-body #chatContainer {
-  background-color: rgba(245, 240, 227, 0.6);
+body #signUp, body #signIn {
+  background-color: rgba(57, 73, 89, 0.9);
 }
 
-body #chatContainer #chatBox {
-  background-color: rgba(218, 142, 80, 0.3);
-  height: 70vh;
-  overflow-y: scroll;
+body #signUp #signUpBtn, body #signUp #signInBtn, body #signIn #signUpBtn, body #signIn #signInBtn {
+  background-color: #da8e50;
+}
+
+body #signUp #signUpLink, body #signUp #signInLink, body #signIn #signUpLink, body #signIn #signInLink {
+  color: #da8e50;
 }
 
 body input:invalid {
@@ -44,15 +46,22 @@ body input:valid {
   border: 2px solid green;
 }
 
-#signIn {
-  background-color: rgba(57, 73, 89, 0.9);
+body #chatContainer {
+  background-color: rgba(245, 240, 227, 0.6);
 }
 
-#signIn #signInBtn {
-  background-color: #da8e50;
+body #chatContainer #chatBox {
+  background-color: rgba(218, 142, 80, 0.3);
+  height: 70vh;
+  overflow-y: scroll;
 }
 
-#signIn #signUpLink {
-  color: #da8e50;
+body #chatContainer textarea {
+  resize: none;
+  overflow-y: scroll;
+}
+
+body #chatContainer button:disabled, body #chatContainer textarea:disabled {
+  cursor: not-allowed;
 }
 /*# sourceMappingURL=style.css.map */

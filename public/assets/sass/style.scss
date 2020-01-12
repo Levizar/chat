@@ -9,35 +9,34 @@ body {
     height: 100vh;
     background: url('../img/cat.jpg') center center;
     background-size: cover;
-
     nav {
         width: 100%;
         margin: 0;
         background-color: rgba($primarycolorNav, $alpha: 0.8);
     }
-
     li{
         list-style-type: none;
     }
 
+    // Index.html
     #jumbotron {
         background-color: rgba($primarycolorNav, $alpha: 0.6);
         border-radius: 2%;
     }
 
+    // SignIn/Up
     #signUpForm {
         display: none;
     }
-
-    #chatContainer{
-        background-color: rgba($primarycolorNav, $alpha: 0.6);
-        #chatBox{
-            background-color: rgba($secondarycolorNav, $alpha: 0.3);
-            height: 70vh;
-            overflow-y: scroll;
+    #signUp, #signIn{
+        background-color: rgba($primarycolorForm, $alpha: 0.9);
+        #signUpBtn, #signInBtn{
+            background-color: $secondarycolorNav;
+        }
+        #signUpLink, #signInLink{
+            color: $secondarycolorNav;   
         }
     }
-    
     input {
         &:invalid {
             border: 2px solid red;
@@ -47,24 +46,29 @@ body {
             border: 2px solid green;
         }
     }
-}
 
-#signIn{
-    background-color: rgba($primarycolorForm, $alpha: 0.9);
-
-    #signInBtn{
-        background-color: $secondarycolorNav;
+    // Chat page
+    #chatContainer{
+        background-color: rgba($primarycolorNav, $alpha: 0.6);
+        #chatBox{
+            background-color: rgba($secondarycolorNav, $alpha: 0.3);
+            height: 70vh;
+            overflow-y: scroll;
+        }
+        textarea {
+            resize: none;
+            overflow-y: scroll;
+        }
+        button:disabled, textarea:disabled {
+            cursor: not-allowed;
+        }
     }
     
-    #signUpLink{
-        color: $secondarycolorNav;   
-    }
+
 }
 
-textarea {
-    resize: none !important;
-    overflow-y: scroll;
-}
+
+
 
 
 
