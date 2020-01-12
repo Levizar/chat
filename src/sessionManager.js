@@ -21,8 +21,14 @@ module.exports = {
         return ip;
     },
 
+    /**
+     * @description Check if the given IP is blacklisted. An IP is blacklisted when it reaches a defined amount of failed login attempts
+     * @param { String } ip The IP obtained from the getIp() method
+     * @returns { Boolean } Return true if the user has to be blocked, otherwise return false
+     */
     isBlacklisted(ip) {
-        return ip !== null ? this.failedAttempts[ip] >= 10 : false;
+        if (typeof ip === "string") return this.failedAttempts[ip] >= 10;
+        else return false;
     },
 
     getSid(cookies) {

@@ -21,7 +21,7 @@ exports.init = (io, sessionManager) => {
         socket.on("message", message => {
             if (isConnected) {
                 message = message.replace(/\s+/g, " ").trim();
-                if (message !== " " && message.length > 1 && message.length <= 512) {
+                if (message.length > 1 && message.length <= 512) {
                     const newMessage = {
                         "author"  : username,
                         "content" : message
