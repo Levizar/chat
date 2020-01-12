@@ -59,11 +59,12 @@ body {
             resize: none;
             overflow-y: scroll;
         }
-        button:disabled, textarea:disabled {
-            cursor: not-allowed;
+        button, textarea {
+            &:disabled {
+                cursor: not-allowed;
+            }
         }
     }
-
 }
 
 
