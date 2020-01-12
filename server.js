@@ -43,13 +43,15 @@ app.get("/chat", (req, res) => {
         "isConnected" : false
     });
 
-    // Change the connection button with a logout button if the user is already connected
-    if (session.isConnected) {
-        fs.readFile(__dirname + "/public/chat.html", "UTF-8", (err, data) => {
-            if (err) console.error(err);
-            else res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
-        });
-    } else res.status(200).sendFile(__dirname + "/public/chat.html");
+    fs.readFile(__dirname + "/public/chat.html", "UTF-8", (err, data) => {
+        if (err) console.error(err);
+        else if (session.isConnected) {
+            // Change the connection button with a logout button if the user is already connected
+            res.status(200).send(data.replace('connection">Connecte-toi !', 'logout">Déconnexion'));
+        } else {
+            res.status(200).send(data.replace('Ton message ici"', 'Connecte-toi pour pouvoir écrire" DISABLED'));
+        }
+    });
 });
 
 app.get("/connection", (req, res) => {
@@ -70,6 +72,8 @@ app.get("*", (_, res) => res.status(404).send("error 404"));
 
 // Handle sign up requests
 app.post("/signup", (req, res) => {
+
+    // Receive the posted data
     let data = "";
     req.on("data", chunk => {
         data += chunk;
@@ -80,6 +84,8 @@ app.post("/signup", (req, res) => {
     });
 
     req.on("end", () => {
+
+        // Parse the received data
         try {
             var { username, password, email } = JSON.parse(data);
         } catch {
@@ -143,6 +149,8 @@ app.post("/signup", (req, res) => {
 
 // Handle sign in requests
 app.post("/login", (req, res) => {
+    
+    // Receive the posted data
     let data = "";
     req.on("data", chunk => {
         data += chunk;
@@ -154,8 +162,10 @@ app.post("/login", (req, res) => {
 
     req.on("end", () => {
         const ip = sessionManager.getIp(req);
-        console.log(ip)
+        // An IP can be blacklisted after too many failed login attempts
         if (sessionManager.isBlacklisted(ip)) return res.status(429).send("TOO MANY REQUESTS");
+
+        // Parse the received data
         try {
             var { username, password } = JSON.parse(data);
         } catch {
@@ -184,6 +194,7 @@ app.post("/login", (req, res) => {
             } else if (rows.length !== 0) {
                 const userData = rows[0];
                 if (userData["sha256_password"] === password) {
+
                     // The user is authenticated: create a new related session
                     sessionManager.newSession(res, {
                         "userId"      : userData["id"],
@@ -192,10 +203,15 @@ app.post("/login", (req, res) => {
                     });
                     res.status(200).send("USER SUCCESSFULLY AUTHENTICATED");
                     console.log(`%s${username} %sconnected`, "\x1b[1m\x1b[34m", "\x1b[1m\x1b[32m", "\x1b[0m");
+
+                    // Reset the counter of failed login attempts
+                    delete sessionManager.failedAttempts[ip];
                 } else {
-                    sessionManager.failedAttempts[ip] ? sessionManager.failedAttempts[ip]++ : sessionManager.failedAttempts[ip] = 1;
                     console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: the password doesn't match`);
                     res.status(403).send("WRONG LOGIN DETAILS");
+
+                    // If the password doesn't match, increment a counter which blocks the IP when a defined amount of failed attempts is reached
+                    sessionManager.failedAttempts[ip] ? sessionManager.failedAttempts[ip]++ : sessionManager.failedAttempts[ip] = 1;
                 }
             } else {
                 console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to authenticate the user`);
@@ -206,7 +222,7 @@ app.post("/login", (req, res) => {
     });
 });
 
-const port = 80;
+const port = 8080;
 http.listen(port, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", `Listening on port ${port}.`));
 
 // ---------------- SOCKET.IO ---------------- \\
