@@ -8,13 +8,13 @@ exports.init = (io, sessionManager) => {
             return socket.disconnect();
         }
         const { username, userId, isConnected } = session;
-
+        socket.emit("roomData", usersInTheRoom);
+        
         if (Boolean(session.socket) !== false) {
             session.socket++;
         } else {
             session.socket = 1;
             usersInTheRoom[userId] = username;
-            socket.emit("roomData", usersInTheRoom);
             io.emit("joinRoom", username);
         }
 
