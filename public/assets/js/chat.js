@@ -61,12 +61,6 @@
             cloningTemplate("userList", "userElement");
             document.querySelector("#userList > li:last-child").innerText = user;
         })
-        // cloningTemplate("userList", "userElement")
-        // const newUserNode = document.querySelector("#userList > li:last-child")
-        // newUserNode.innerText = username;
-        // const iToAdd = userList.findIndex(elm => elm === `${username}`);
-        // const target = document.querySelector(`#userList > li:nth-child(${iToAdd +1})`);
-        // document.querySelector("#userList").insertBefore(newUserNode, target);
     })
     
     // Send a message when an user leave the room and update userList
