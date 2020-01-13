@@ -15,7 +15,7 @@ const displayReceivedMessageToChat = (username, content) => {
     const date = new Date();
     const hours = date.getHours();
     const mins = date.getMinutes();
-    document.querySelector("#chatBox > p:last-child > span.time").innerText = `[${hours}:${mins}]`;
+    document.querySelector("#chatBox > p:last-child > span.time").innerText = `[${hours < 10 ? "0" + hours : hours}:${mins < 10 ? "0" + mins : mins}]`;
     document.querySelector("#chatBox > p:last-child > span.username").innerText = `${username} :`;
     document.querySelector("#chatBox > p:last-child > span.message").innerText = content;
 }
