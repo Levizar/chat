@@ -38,11 +38,11 @@ body #signUp #signUpLink, body #signUp #signInLink, body #signIn #signUpLink, bo
   color: #da8e50;
 }
 
-body input:invalid {
+body input.invalid {
   border: 2px solid red;
 }
 
-body input:valid {
+body input.valid {
   border: 2px solid green;
 }
 
