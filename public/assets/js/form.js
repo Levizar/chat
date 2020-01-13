@@ -56,5 +56,7 @@ document.getElementById('signUpBtn').addEventListener("click", async () => {
     } catch (error) {
       console.error(error);
     }
+  }else{
+    
   }
 })
