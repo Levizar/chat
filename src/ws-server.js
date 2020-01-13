@@ -32,7 +32,7 @@ exports.init = (io, sessionManager) => {
         });
         socket.on("disconnect", () => {
             if (--session.socket === 0) {
-                delete usersInTheRoom.userId;
+                delete usersInTheRoom[userId];
                 socket.broadcast.emit("leaveRoom", username);
             }
         });

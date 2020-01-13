@@ -51,18 +51,19 @@ document.getElementById('chatMessage').addEventListener("keypress", e => {
 
 // Send a message when an user join the room
 socket.on("joinRoom", username => {
-    displayReceivedMessageToChat(username, "est parti... Espérons qu'il revienne vite !")
+    displayReceivedMessageToChat(username, "vient d'arriver ! Bienvenue à lui !");
 })
 
 // Send a message when an user leave the room
 socket.on("leaveRoom", username => {
-    displayReceivedMessageToChat(username, "vient d'arriver ! Bienvenue à lui !")
-    document.querySelector("#chatBox > p:last-child > span.message").innerText = "est parti... Espérons qu'il revienne vite !";
+    displayReceivedMessageToChat(username, "est parti... Espérons qu'il revienne vite !");
+    // TODO: EDIT USERLIST
+    // document.querySelector("#chatBox > p:last-child > span.message").innerText = "est parti... Espérons qu'il revienne vite !";
 })
 
 // Send a message to the user on disconnection on the chat page
 socket.on("disconnected", () => {
-    displayReceivedMessageToChat("Attention", "Tu as été déco, essaie d'actualiser la page !")
+    displayReceivedMessageToChat("Attention", "Tu as été déco, essaie d'actualiser la page !");
     const message = document.querySelector("#chatBox > p:last-child");
     message.classList.add("text-danger");
 });
