@@ -89,4 +89,9 @@
             document.querySelector("#userList > li:last-child").innerText = user;
         })
     })
+<<<<<<< HEAD
 })();
+=======
+})
+
+>>>>>>> front

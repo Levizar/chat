@@ -38,11 +38,11 @@ body #signUp #signUpLink, body #signUp #signInLink, body #signIn #signUpLink, bo
   color: #da8e50;
 }
 
-body input:invalid {
+body input.invalid {
   border: 2px solid red;
 }
 
-body input:valid {
+body input.valid {
   border: 2px solid green;
 }
 
@@ -63,5 +63,17 @@ body #chatContainer textarea {
 
 body #chatContainer button:disabled, body #chatContainer textarea:disabled {
   cursor: not-allowed;
+}
+
+#signUp {
+  background-color: rgba(57, 73, 89, 0.9);
+}
+
+#signUp #signUpBtn {
+  background-color: #da8e50;
+}
+
+#signUp #signInLink {
+  color: #da8e50;
 }
 /*# sourceMappingURL=style.css.map */
