@@ -6,6 +6,30 @@
 
 module.exports = {
     sessions: {},
+    failedAttempts: {},
+
+    getIp(req) {
+        try {
+            var ip = (req.headers["x-forwarded-for"] || "").split(",").pop() ||
+                      req.connection.remoteAddress ||
+                      req.socket.remoteAddress ||
+                      req.connection.socket.remoteAddress;
+        } catch {
+            console.error("\x1b[1m\x1b[31m%s\x1b[0m", "Cannot get the IP if this user");
+            return null;
+        }
+        return ip;
+    },
+
+    /**
+     * @description Check if the given IP is blacklisted. An IP is blacklisted when it reaches a defined amount of failed login attempts
+     * @param { String } ip The IP obtained from the getIp() method
+     * @returns { Boolean } Return true if the user has to be blocked, otherwise return false
+     */
+    isBlacklisted(ip) {
+        if (typeof ip === "string") return this.failedAttempts[ip] >= 10;
+        else return false;
+    },
 
     getSid(cookies) {
         const sid = /(?<=sid=)[^(;|^)]+/.exec(cookies);

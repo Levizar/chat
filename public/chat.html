@@ -37,32 +37,39 @@
     </header>
     <div class="container pt-3 mt-4" id="chatContainer">
         <div class="row">
-            <div class="col-13 col-md-3">
-                <!-- Button to change in "hamburger menu" button -->
-                <button class="btn btn-primary my-1" type="button" data-toggle="collapse" data-target="#userList"
-                    aria-expanded="true" aria-controls="List of users expander">
-                    Liste des utilisateurs
-                </button>
-                <ul class="collapse" id="userList">
-                    <!-- Template pour la liste des utilisateurs -->
-                    <template>
-                        <li></li>
-                    </template>
+            <div class="col-13 col-md-3 mx-auto">
+                <div class="col-13 d-flex justify-content-around">
+                    <button class="btn btn-primary my-1 rounded-pill d-inline-block d-md-none mx-auto" type="button" data-toggle="collapse" data-target="#userList"
+                        aria-expanded="true" aria-controls="List of users expander">
+                        Afficher/cacher la Liste des utilisateurs
+                    </button>
+                </div>
+                <!-- Template pour la liste des utilisateurs -->
+                <template id="userElement">
+                    <li></li>
+                </template>
+                <ul class="collapse.show" id="userList">
+                    <!-- List des utilisateurs -->
+                    <li>Test</li>
                 </ul>
             </div>
             <div class="col-13 col-md-9">
                 <div class="col-13 col-md-13">
+                    <template id="messageTemplate">
+                        <p><span class="time"></span> - <span class="username font-weight-bold"></span> <span class="message"></span></p>
+                    </template>
                     <div id="chatBox" class="col-13 col-md-13 my-1 mb-2 p-3">
-                        <p>Chat box</p>
+                        <!-- chat zone -->
                     </div>
                 </div>
                 <div class="col-md-13">
-                    <form type="text-area" method="post" id="chatForm"
+                    <label for="message" class="col-13"><span id="msgError" class="text-danger"></span></label>
+                    <div type="text-area" method="post" id="chatForm"
                         class="col-13 col-md-13 d-flex justify-content-between">
                         <textarea name="chatMessage" id="chatMessage" class="col-13 col-md-10 my-1 mb-3"
                             placeholder="Ton message ici"></textarea>
-                        <button class="col-13 col-md-2 ml-md-2 ml-0 my-1 mb-3">Send</button>
-                    </form>
+                        <button class="col-13 col-md-2 ml-md-2 ml-0 my-1 mb-3" id="sendBtn">Envoyer</button>
+                    </div>
                 </div>
             </div>
         </div>

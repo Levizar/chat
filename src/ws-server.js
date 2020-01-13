@@ -20,17 +20,19 @@ exports.init = (io, sessionManager) => {
 
         socket.on("message", message => {
             if (isConnected) {
-                // TODO : Sanitize message
-                const newMessage = {
-                    "author"  : username,
-                    "content" : message
-                };
-                io.emit("message", newMessage);
+                message = message.replace(/\s+/g, " ").trim();
+                if (message.length > 1 && message.length <= 512) {
+                    const newMessage = {
+                        "author"  : username,
+                        "content" : message
+                    };
+                    io.emit("message", newMessage);
+                }
             }
         });
         socket.on("disconnect", () => {
             if (--session.socket === 0) {
-                delete usersInTheRoom.userId;
+                delete usersInTheRoom[userId];
                 socket.broadcast.emit("leaveRoom", username);
             }
         });

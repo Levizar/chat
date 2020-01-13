@@ -5,17 +5,17 @@
  */
 
 const sanitizationRules = {
-    "username" : {
+    "username"    : {
         "minLength" : 3,
         "maxLength" : 20,
         "regex"     : /^\w+$/
     },
-    "email"    : {
+    "email"       : {
         "minLength" : 6,
         "maxLength" : 100,
         "regex"     : /^[A-Z0-9](\.?[A-Z0-9])+@[A-Z0-9](\.?[A-Z0-9])+\.[A-Z]{2,4}$/i
     },
-    "password" : {
+    "password"    : {
         "minLength" : 6,
         "maxLength" : 30,
         "regex"     : null
