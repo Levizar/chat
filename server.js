@@ -8,7 +8,18 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 const mysql = require("mysql");
-const dbLogin = JSON.parse(fs.readFileSync("login.json"));
+
+const { Client } = require('pg');
+
+const db = new Client({
+    user: "vtrgcgnddeyqog",
+    password: "61ab990c2b29e951795d92d857130fb30f90ca8aa8c9f18055a215e72fa3b649",
+    port: 5432,
+    database: "chat",
+    connectionString: "postgres://vtrgcgnddeyqog:61ab990c2b29e951795d92d857130fb30f90ca8aa8c9f18055a215e72fa3b649@ec2-54-228-237-40.eu-west-1.compute.amazonaws.com:5432/d70q67a34ir4hi",
+    ssl: true,
+  });
+
 
 const sessionManager = require("./src/sessionManager.js"); // A custom module to handle sessions
 const { sanitize } = require("./src/sanitize.js"); // A custom module to sanitize inputs
@@ -104,7 +115,6 @@ app.post("/signup", (req, res) => {
         
         // PROCESS
         
-        const db = mysql.createConnection(dbLogin);
         db.connect();
         // Check that the username is available
         db.query(`SELECT id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
@@ -185,7 +195,6 @@ app.post("/login", (req, res) => {
 
         // PROCESS
 
-        const db = mysql.createConnection(dbLogin);
         db.connect();
         db.query(`SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
             if (err) {
