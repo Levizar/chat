@@ -231,7 +231,7 @@ app.post("/login", (req, res) => {
     });
 });
 
-const port = 8080;
+const port = process.env.PORT || 8080; // let the port be set by heroku
 http.listen(port, () => console.log("\x1b[1m\x1b[32m%s\x1b[0m", `Listening on port ${port}.`));
 
 // ---------------- SOCKET.IO ---------------- \\
