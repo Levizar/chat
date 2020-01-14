@@ -1,0 +1,7 @@
+{
+    "host"     : "localhost",
+    "user"     : "root",
+    "password" : "root",
+    "port"     : 8989,
+    "database" : "chat"
+}
