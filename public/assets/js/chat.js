@@ -67,9 +67,11 @@
     socket.on("leaveRoom", username => {
         displayReceivedMessageToChat(username, "est parti... Espérons qu'il revienne vite !");
         userList = userList.filter(user => user !== username);
-        const iToDelete = userList.findIndex(elm => elm === `${username}`);
-        const nodeToDelete = document.querySelector(`#userList > li:nth-child(${iToDelete +1})`);
-        nodeToDelete.remove();
+        document.querySelectorAll("#userList > li").forEach(elm => elm.remove());
+        userList.forEach(user => {
+            cloningTemplate("userList", "userElement");
+            document.querySelector("#userList > li:last-child").innerText = user;
+        });
     })
     
     // Send a message to the user on disconnection on the chat page
