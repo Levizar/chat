@@ -33,7 +33,7 @@ exports.sanitize = (type, v) => {
     if (typeof v !== "string") return new TypeError(type + " should be typeof String");
     v = v.trim();
     const length = v.length;
-    if (length < minLength && length > maxLength) return new RangeError();
+    if (length < minLength || length > maxLength) return new RangeError();
     if (regex !== null) return regex.test(v) ? v : new SyntaxError();
     else return v;
 };
