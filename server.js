@@ -114,46 +114,50 @@ app.post("/signup", (req, res) => {
         } else password = crypto.createHash("sha256").update(password).digest("base64"); // Hash the password
         
         // PROCESS
-        
-        db.connect();
-        // Check that the username is available
-        db.query(`SELECT id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send();
-            } else if (rows.length !== 0) {
-                console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: unavailable username`);
-                res.status(403).send("UNAVAILABLE USERNAME");
-            } else {
-                // Create a new user account
-                const userId = crypto.randomBytes(16).toString("hex");
-                db.query(
-                    `INSERT INTO users (id, username, sha256_password, email) VALUES (?, ?, ?, ?)`, 
-                    [
-                        userId,
-                        username,
-                        password,
-                        email
-                    ],
-                    (err, _) => {
-                        if (err) {
-                            console.error(err);
-                            res.status(500).send();
+        try{
+            db.connect();
+            // Check that the username is available
+            db.query("SELECT id FROM users WHERE username = ? LIMIT 1", username, (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send();
+                } else if (rows.length !== 0) {
+                    console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: unavailable username`);
+                    res.status(403).send("UNAVAILABLE USERNAME");
+                } else {
+                    // Create a new user account
+                    const userId = crypto.randomBytes(16).toString("hex");
+                    db.query(
+                        "INSERT INTO users (id, username, sha256_password, email) VALUES (?, ?, ?, ?)", 
+                        [
+                            userId,
+                            username,
+                            password,
+                            email
+                        ],
+                        (err, _) => {
+                            if (err) {
+                                console.error(err);
+                                res.status(500).send();
+                            }
+                            else {
+                                console.log("\x1b[1m\x1b[32m%s\x1b[0m", `New account created: ${username}.`);
+                                sessionManager.newSession(res, {
+                                    "userId"      : userId,
+                                    "username"    : username,
+                                    "isConnected" : true
+                                });
+                                res.status(200).send("Account successfully created");
+                            }
                         }
-                        else {
-                            console.log("\x1b[1m\x1b[32m%s\x1b[0m", `New account created: ${username}.`);
-                            sessionManager.newSession(res, {
-                                "userId"      : userId,
-                                "username"    : username,
-                                "isConnected" : true
-                            });
-                            res.status(200).send("Account successfully created");
-                        }
-                    }
-                );
-                db.end();
-            }
+                    );
+                }
         });
+        }catch(err){
+            console.error(err);
+        } finally{
+            db.end();
+        }
     });
 });
 
@@ -171,12 +175,12 @@ app.post("/login", (req, res) => {
     });
 
     req.on("end", () => {
+        try {
         const ip = sessionManager.getIp(req);
         // An IP can be blacklisted after too many failed login attempts
         if (sessionManager.isBlacklisted(ip)) return res.status(429).send("TOO MANY REQUESTS");
 
         // Parse the received data
-        try {
             var { username, password } = JSON.parse(data);
         } catch {
             console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to parse data`);
@@ -189,45 +193,53 @@ app.post("/login", (req, res) => {
         password = sanitize("password", password);
 
         if (username instanceof Error || password instanceof Error) {
-            res.status(400).send("INVALID DATA");
-            return console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: invalid data`);
+            try{
+                res.status(400).send("INVALID DATA");
+                return console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: invalid data`);
+            }catch(err){
+                console.error(err)
+            }
         } else password = crypto.createHash("sha256").update(password).digest("base64"); // Hash the password
 
         // PROCESS
-
-        db.connect();
-        db.query(`SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1`, username, (err, rows) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send();
-            } else if (rows.length !== 0) {
-                const userData = rows[0];
-                if (userData["sha256_password"] === password) {
-
-                    // The user is authenticated: create a new related session
-                    sessionManager.newSession(res, {
-                        "userId"      : userData["id"],
-                        "username"    : username,
-                        "isConnected" : true
-                    });
-                    res.status(200).send("USER SUCCESSFULLY AUTHENTICATED");
-                    console.log(`%s${username} %sconnected`, "\x1b[1m\x1b[34m", "\x1b[1m\x1b[32m", "\x1b[0m");
-
-                    // Reset the counter of failed login attempts
-                    delete sessionManager.failedAttempts[ip];
+        try{
+            db.connect();
+            db.query("SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1", username, (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send();
+                } else if (rows.length !== 0) {
+                    const userData = rows[0];
+                    if (userData["sha256_password"] === password) {
+    
+                        // The user is authenticated: create a new related session
+                        sessionManager.newSession(res, {
+                            "userId"      : userData["id"],
+                            "username"    : username,
+                            "isConnected" : true
+                        });
+                        res.status(200).send("USER SUCCESSFULLY AUTHENTICATED");
+                        console.log(`%s${username} %sconnected`, "\x1b[1m\x1b[34m", "\x1b[1m\x1b[32m", "\x1b[0m");
+    
+                        // Reset the counter of failed login attempts
+                        delete sessionManager.failedAttempts[ip];
+                    } else {
+                        console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: the password doesn't match`);
+                        res.status(403).send("WRONG LOGIN DETAILS");
+    
+                        // If the password doesn't match, increment a counter which blocks the IP when a defined amount of failed attempts is reached
+                        sessionManager.failedAttempts[ip] ? sessionManager.failedAttempts[ip]++ : sessionManager.failedAttempts[ip] = 1;
+                    }
                 } else {
-                    console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: the password doesn't match`);
+                    console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to authenticate the user`);
                     res.status(403).send("WRONG LOGIN DETAILS");
-
-                    // If the password doesn't match, increment a counter which blocks the IP when a defined amount of failed attempts is reached
-                    sessionManager.failedAttempts[ip] ? sessionManager.failedAttempts[ip]++ : sessionManager.failedAttempts[ip] = 1;
                 }
-            } else {
-                console.error("\x1b[1m\x1b[31m%s\x1b[0m", `${req.method} ${req.url}: failed to authenticate the user`);
-                res.status(403).send("WRONG LOGIN DETAILS");
-            }
-        });
-        db.end();
+            });
+        } catch(err){
+            console.error(err)
+        } finally{
+            db.end();
+        }
     });
 });
 
