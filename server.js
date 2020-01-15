@@ -113,7 +113,7 @@ app.post("/signup", (req, res) => {
         try{
             db.connect();
             // Check that the username is available
-            db.query("SELECT id FROM users WHERE username = ? LIMIT 1", username, (err, rows) => {
+            db.query("SELECT id FROM users WHERE username = $1 LIMIT 1", username, (err, rows) => {
                 if (err) {
                     console.error(err);
                     res.status(500).send();
@@ -124,7 +124,7 @@ app.post("/signup", (req, res) => {
                     // Create a new user account
                     const userId = crypto.randomBytes(16).toString("hex");
                     db.query(
-                        "INSERT INTO users (id, username, sha256_password, email) VALUES (?, ?, ?, ?)", 
+                        "INSERT INTO users (id, username, sha256_password, email) VALUES ($1, $2, $3, $4)", 
                         [
                             userId,
                             username,
@@ -200,7 +200,7 @@ app.post("/login", (req, res) => {
         // PROCESS
         try{
             db.connect();
-            db.query("SELECT sha256_password, id FROM users WHERE username = ? LIMIT 1", username, (err, rows) => {
+            db.query("SELECT sha256_password, id FROM users WHERE username = $1 LIMIT 1", username, (err, rows) => {
                 if (err) {
                     console.error(err);
                     res.status(500).send();
