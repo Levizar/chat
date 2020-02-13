@@ -57,6 +57,14 @@ We encountered several difficulties with this project.
 
 - The bigger problem was the deployement part of the site because we made the choice to use MySQL instead of mongoDB, we couldn't deploy it on Heroku (it works with PostGreSQL) or Webhost (it doesn't support nodeJS). I tried to convert MySQL to PostGreSQL to deploy it on Heroku but I didn't manage to do that in time for this project.
 
+### Louis:
+
+
+
+### Maelys:
+
+
+
 ## How to test it:
 
 ### Requirement:
