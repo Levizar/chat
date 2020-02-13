@@ -62,7 +62,7 @@ We encountered several difficulties with this project.
 ### Requirement:
 
 - MySql
-- an SQL administration tool
+- SQL administration tool like PHPmyadmin
 
 ### Todo:
 
