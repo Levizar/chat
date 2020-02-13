@@ -21,6 +21,8 @@ The goals of this project were to:
 - NodeJS
 
     To have a Real-time server infrastructure as the project requires.
+    We used the crypto module from NodeJS to hash passwords with the SHAE256 algorithm.
+    Thus even if the database is leaked, the passwords remain safe.
 
 - Express.JS
 
@@ -29,11 +31,6 @@ The goals of this project were to:
 - Socket.IO
 
     Allows us to create a socket to update messages in real-time instead of simulating it with the long-polling techniques.
-
-- Crypto.JS
-
-    We used crypto to hash passwords with the SHAE256 algorithm.
-    Thus even if the database is leaked, the passwords remain safe.
 
 - MySql
 
@@ -68,3 +65,20 @@ We encountered several difficulties with this project.
 
 - MySql
 - an SQL administration tool
+
+### Todo:
+
+- Clone the repository
+- Open "login.json"
+- Replace the configuration by your local MySQL configuration
+    - It doesn't need a root account because it doesn't create table and database itself
+- Open your administration Client
+- copy paste the SQL instruction below or do the same statement by yourself
+    
+{
+    "host"     : "localhost",
+    "user"     : "root",
+    "password" : "",
+    "port"     : 3300,
+    "database" : "chat"
+}
