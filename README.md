@@ -1,47 +1,45 @@
 # Chat application
 
-
 ## Goal
 
 The goals of this project were to:
 
 1. Create a simple chat application that allows users to share messages
 2. Manage sessions :
-    - Allow to Register with a nickname
-    - Allow to Login/Logout
-    - Allow to Share messages in real-time
+   - Allow to Register with a nickname
+   - Allow to Login/Logout
+   - Allow to Share messages in real-time
 3. Use database for the last step
 
 ## Technologies
 
 - NPM
 
-    To manage all the packages.
+  To manage all the packages.
 
 - NodeJS
 
-    To have a Real-time server infrastructure as the project requires.
-    We used the crypto module from NodeJS to hash passwords with the SHAE256 algorithm.
-    Thus even if the database is leaked, the passwords remain safe.
+  To have a Real-time server infrastructure as the project requires.
+  We used the crypto module from NodeJS to hash passwords with the SHAE256 algorithm.
+  Thus even if the database is leaked, the passwords remain safe.
 
 - Express.JS
 
-    To accelerate the server development.
+  To accelerate the server development.
 
 - Socket.IO
 
-    Allows us to create a socket to update messages in real-time instead of simulating it with the long-polling techniques.
+  Allows us to create a socket to update messages in real-time instead of simulating it with the long-polling techniques.
 
 - MySql
 
-    We could have used MongoDB but we wanted to use MySQL in order to learn it.
+  We could have used MongoDB but we wanted to use MySQL in order to learn it.
 
 ## Team:
 
 - [**Brice Bartoletti**](https://github.com/Levizar)
 - [**Louis Wicket**](https://github.com/512LouisWicket)
 - [**Maelys Etienne**](https://github.com/Mae26)
-
 
 Thanks to our [Woods team-mates](https://github.com/orgs/becodeorg/teams/crl-woods-2-15) from BeCode for their support.
 
@@ -71,14 +69,23 @@ We encountered several difficulties with this project.
 - Clone the repository
 - Open "login.json"
 - Replace the configuration by your local MySQL configuration
-    - It doesn't need a root account because it doesn't create table and database itself
-- Open your administration Client
-- copy paste the SQL instruction below or do the same statement by yourself
-    
-{
-    "host"     : "localhost",
-    "user"     : "root",
-    "password" : "",
-    "port"     : 3300,
-    "database" : "chat"
-}
+  - The server itself doesn't need a lot of rights management.
+    It only needs the right to query and insert data into the USERS table.
+- In your local MYSQL CLI, create the database "chat" and the table users with column as behind or copy/paste these SQL statements and execute it.
+  ```SQL
+    CREATE DATABASE IF NOT EXISTS chat;
+    USE chat;
+    CREATE TABLE users
+    (
+    id VARCHAR(255),
+    username VARCHAR(20),
+    sha256_password VARCHAR(255),
+    email VARCHAR(100)
+    );
+  ```
+- Open your terminal in the root of the repository
+- execute this command:
+    ```bash
+    npm install && npm start
+    ```
+- Go to your localhost to test the chat
